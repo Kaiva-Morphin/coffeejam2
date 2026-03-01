@@ -1,0 +1,187 @@
+[gd_scene format=3 uid="uid://ds3klvkk8l2g6"]
+
+[ext_resource type="Texture2D" uid="uid://jvjcmq35ipd6" path="res://assets/snowflake.png" id="1_oil7p"]
+[ext_resource type="Texture2D" uid="uid://daubjgfj4h2rx" path="res://assets/petal.png" id="2_oq4e4"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_prw4j"]
+sky_top_color = Color(0.09, 0.09, 0.09, 1)
+sky_horizon_color = Color(0.19, 0.19, 0.19, 1)
+ground_bottom_color = Color(0.1, 0.1, 0.1, 1)
+ground_horizon_color = Color(0.18, 0.18, 0.18, 1)
+sun_angle_max = 0.0
+
+[sub_resource type="Sky" id="Sky_oil7p"]
+sky_material = SubResource("ProceduralSkyMaterial_prw4j")
+
+[sub_resource type="Environment" id="Environment_oq4e4"]
+background_mode = 2
+sky = SubResource("Sky_oil7p")
+tonemap_mode = 2
+ssr_enabled = true
+
+[sub_resource type="Curve" id="Curve_oil7p"]
+_data = [Vector2(0.75839996, 1), 0.0, -0.30257773, 0, 0, Vector2(0.9856, 0), -12.252015, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_oq4e4"]
+curve = SubResource("Curve_oil7p")
+
+[sub_resource type="Curve" id="Curve_f4rfl"]
+_limits = [0.25, 1.5, 0.0, 1.0]
+_data = [Vector2(0, 0.25), 0.0, 0.0, 0, 0, Vector2(1, 0.25), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_cwnf3"]
+curve = SubResource("Curve_f4rfl")
+
+[sub_resource type="Curve" id="Curve_oq4e4"]
+_data = [Vector2(0.85120004, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.7018671), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_prw4j"]
+_limits = [0.0, 3.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, -0.05, 0, 0, Vector2(0.8, 1.2), 0.0, 0.0, 0, 0, Vector2(1, 1.4982499), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_f4rfl"]
+curve_x = SubResource("Curve_oq4e4")
+curve_y = SubResource("Curve_prw4j")
+curve_z = SubResource("Curve_oq4e4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_oil7p"]
+emission_shape = 3
+emission_box_extents = Vector3(33.25, 1, 28.575)
+direction = Vector3(0, -1, 0)
+spread = 0.0
+initial_velocity_min = 32.67
+initial_velocity_max = 70.88
+angular_velocity_min = -1.6093254e-05
+angular_velocity_max = -1.6093254e-05
+gravity = Vector3(0, -5, 0)
+radial_accel_min = -2.2351742e-06
+radial_accel_max = -2.2351742e-06
+scale_curve = SubResource("CurveTexture_cwnf3")
+scale_over_velocity_max = 10.0
+scale_over_velocity_curve = SubResource("CurveXYZTexture_f4rfl")
+alpha_curve = SubResource("CurveTexture_oq4e4")
+turbulence_enabled = true
+turbulence_noise_strength = 4.06
+turbulence_noise_scale = 4.475
+turbulence_influence_min = 0.0
+turbulence_influence_max = 0.09200001
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f4rfl"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 0.047058824)
+albedo_texture = ExtResource("1_oil7p")
+
+[sub_resource type="QuadMesh" id="QuadMesh_f4rfl"]
+material = SubResource("StandardMaterial3D_f4rfl")
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_oq4e4"]
+particle_flag_align_y = true
+emission_shape = 3
+emission_box_extents = Vector3(33.25, 1, 28.575)
+direction = Vector3(0, -1, 0)
+spread = 0.0
+initial_velocity_min = 11.55
+initial_velocity_max = 12.05
+angular_velocity_min = -1.6093254e-05
+angular_velocity_max = -1.6093254e-05
+gravity = Vector3(0, -0.805, 0)
+radial_accel_min = -2.2351742e-06
+radial_accel_max = -2.2351742e-06
+scale_curve = SubResource("CurveTexture_cwnf3")
+scale_over_velocity_max = 10.0
+scale_over_velocity_curve = SubResource("CurveXYZTexture_f4rfl")
+alpha_curve = SubResource("CurveTexture_oq4e4")
+turbulence_enabled = true
+turbulence_noise_strength = 4.06
+turbulence_noise_scale = 4.475
+turbulence_influence_min = 0.0
+turbulence_influence_max = 0.09200001
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_prw4j"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 0.047058824)
+albedo_texture = ExtResource("2_oq4e4")
+
+[sub_resource type="QuadMesh" id="QuadMesh_oq4e4"]
+material = SubResource("StandardMaterial3D_prw4j")
+size = Vector2(2, 2)
+
+[sub_resource type="Shader" id="Shader_prw4j"]
+code = "shader_type spatial;
+
+uniform vec3 center_offset = vec3(0.0);
+uniform vec4 col : source_color = vec4(0.0, 0.0, 0.0, 1.0);
+
+void vertex() {
+	vec3 cam_world = (INV_VIEW_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+	vec3 cam_local = (inverse(MODEL_MATRIX) * vec4(cam_world, 1.0)).xyz;
+	vec2 look_dir = normalize(vec2(cam_local.x, cam_local.z));
+	float angle_y = atan(look_dir.x, look_dir.y);
+	float cy = cos(angle_y);
+	float sy = sin(angle_y);
+	
+	mat3 billboard_y = mat3(
+		 vec3(cy, 0.0, -sy),
+		 vec3(0.0, 1.0, 0.0),
+		vec3(sy, 0.0, cy)
+	);
+	
+	vec3 v = VERTEX - center_offset;
+	v = billboard_y * v;
+	VERTEX = v + center_offset;
+}
+
+
+void fragment() {
+	ALBEDO = col.rgb;
+	ALPHA = col.a;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oil7p"]
+render_priority = 0
+shader = SubResource("Shader_prw4j")
+shader_parameter/center_offset = Vector3(0, 0, 0)
+shader_parameter/col = Color(0, 0, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_prw4j"]
+
+[node name="Particles2" type="Node3D" unique_id=696012208]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1474557538]
+environment = SubResource("Environment_oq4e4")
+
+[node name="GPUParticles3D2" type="GPUParticles3D" parent="." unique_id=1866368642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 22, 0)
+amount = 50000
+lifetime = 3.0
+visibility_aabb = AABB(-30, -60, -30, 60, 60, 60)
+transform_align = 3
+process_material = SubResource("ParticleProcessMaterial_oil7p")
+draw_pass_1 = SubResource("QuadMesh_f4rfl")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=448083279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+visible = false
+amount = 10000
+lifetime = 20.0
+process_material = SubResource("ParticleProcessMaterial_oq4e4")
+draw_pass_1 = SubResource("QuadMesh_oq4e4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=909801759]
+material_override = SubResource("ShaderMaterial_oil7p")
+mesh = SubResource("QuadMesh_prw4j")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1256217780]
+transform = Transform3D(-1, 7.856483e-09, -8.706901e-08, 2.190879e-15, 0.9959537, 0.089867696, 8.742275e-08, 0.089867696, -0.9959537, 0, -12.125999, -18)
