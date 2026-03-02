@@ -246,15 +246,13 @@ func clear_hints():
 
 func center_hint_raw(r):
 	var key = r[0]
-	var keycode = r[1]
-	var label = r[2]
-	center_hint(key, keycode, label)
+	var label = r[1]
+	center_hint(key, key, label)
 
 func hint_raw(r):
 	var key = r[0]
-	var keycode = r[1]
-	var label = r[2]
-	hint(key, keycode, label)
+	var label = r[1]
+	hint(key, key, label)
 
 func center_hint(key, keycode, label):
 	_add_hint($Control/CenterContainer/VBoxContainer, true, key, keycode, label)
@@ -361,10 +359,6 @@ _surfaces = [{
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_eb6dy"]
 data = PackedVector3Array(-0.5, -0.1, -0.5, -0.5, 0.1, -0.5, -0.5, -0.1, 0.5, -0.5, -0.1, -0.5, 0.5, -0.1, -0.5, -0.5, 0.1, -0.5, -0.5, -0.1, -0.5, -0.5, -0.1, 0.5, 0.5, -0.1, -0.5, -0.5, 0.1, -0.5, 0.3, 0.1, -0.5, -0.5, 0.1, 0.5, -0.5, -0.1, 0.5, -0.5, 0.1, -0.5, -0.5, 0.1, 0.5, -0.5, -0.1, 0.5, -0.5, 0.1, 0.5, 0.3, 0.1, 0.5, -0.5, 0.1, -0.5, 0.5, -0.1, -0.5, 0.3, 0.1, -0.5, 0.3, 0.1, -0.5, 0.5, -0.1, -0.5, 0.5, 0.1, -0.5, 0.5, -0.1, -0.5, 0.5, 0.1, 0.5, 0.5, 0.1, -0.5, -0.5, 0.1, 0.5, 0.3, 0.1, -0.5, 0.3, 0.1, 0.5, -0.5, -0.1, 0.5, 0.5, -0.1, 0.5, 0.5, -0.1, -0.5, -0.5, -0.1, 0.5, 0.3, 0.1, 0.5, 0.5, 0.1, 0.5, -0.5, -0.1, 0.5, 0.5, 0.1, 0.5, 0.5, -0.1, 0.5, 0.5, -0.1, -0.5, 0.5, -0.1, 0.5, 0.5, 0.1, 0.5, 0.3, 0.9, -0.5, 0.3, 0.1, -0.5, 0.5, 0.1, -0.5, 0.5, 0.9, -0.5, 0.5, 0.1, -0.5, 0.5, 0.1, 0.5, 0.3, 0.9, 0.5, 0.3, 0.1, 0.5, 0.3, 0.1, -0.5, 0.5, 0.9, 0.5, 0.5, 0.1, 0.5, 0.3, 0.1, 0.5, 0.3, 0.9, -0.5, 0.5, 0.1, -0.5, 0.5, 0.9, -0.5, 0.3, 0.9, -0.5, 0.3, 0.9, 0.5, 0.3, 0.1, -0.5, 0.3, 0.9, -0.5, 0.5, 0.9, -0.5, 0.5, 0.9, 0.5, 0.5, 0.9, -0.5, 0.5, 0.1, 0.5, 0.5, 0.9, 0.5, 0.3, 0.9, 0.5, 0.5, 0.9, 0.5, 0.3, 0.1, 0.5, 0.3, 0.9, -0.5, 0.5, 0.9, 0.5, 0.3, 0.9, 0.5)
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_85g3d"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_choun"]
-
 [node name="Main" type="Node3D" unique_id=696012208]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1474557538]
@@ -390,7 +384,7 @@ shadow_enabled = true
 directional_shadow_mode = 0
 
 [node name="костер" type="MeshInstance3D" parent="." unique_id=1068792823]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2866864, -2.3160968, -5.1909456)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0205685, 9.63316, -5.1909456)
 mesh = SubResource("ArrayMesh_o6xl0")
 skeleton = NodePath("")
 
@@ -509,7 +503,6 @@ visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
-alignment = 2
 script = SubResource("GDScript_tipki")
 
 [node name="Label" type="Label" parent="Hints/Control/CenterContainer/Hint" unique_id=199465843]
@@ -676,12 +669,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21472359, -0.9416583, -5.61
 
 [node name="Player" parent="." unique_id=2016181414 instance=ExtResource("7_o6xl0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47151875, -0.6300049, -2.0870588)
-
-[node name="StaticBody3D3" type="StaticBody3D" parent="." unique_id=266957579 groups=["interactable", "log"]]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.7377784, -2.2959852, -5.0498962)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3" unique_id=1519429009]
-shape = SubResource("CylinderShape3D_85g3d")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D3" unique_id=518616939]
-mesh = SubResource("CylinderMesh_choun")
+SPEED = null
+LOSS_SPEED = null
+GRAVITY_SCALE = null
+MOUSE_SENSITIVITY = null
+TILT_LOWER_LIMIT = null
+TILT_UPPER_LIMIT = null
+STICK_SENS = null
+STICK_PITCH_LIMIT = null
+STICK_YAW_LIMIT = null
+STICK_RETURN_SPEED = null

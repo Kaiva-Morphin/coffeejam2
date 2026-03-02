@@ -19,6 +19,12 @@ run/main_scene="uid://7eslxc22l53b"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/stretch/mode="canvas_items"
+
 [global_group]
 
 pickable_joint=""
@@ -26,6 +32,10 @@ interactable=""
 campfire=""
 zefir_burn=""
 zefir_cook=""
+pickable=""
+coffeemachine=""
+heldable=""
+log=""
 
 [input]
 
@@ -83,3 +93,8 @@ shift={
 [physics]
 
 common/physics_interpolation=true
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+textures/vram_compression/import_etc2_astc=true

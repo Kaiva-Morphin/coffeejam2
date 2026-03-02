@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bthjbxdlyt7nm"
 path.s3tc="res://.godot/imported/scene_поплавок.png-b704597a187208fc2e704328e496dc6d.s3tc.ctex"
+path.etc2="res://.godot/imported/scene_поплавок.png-b704597a187208fc2e704328e496dc6d.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/scene_поплавок.png"
-dest_files=["res://.godot/imported/scene_поплавок.png-b704597a187208fc2e704328e496dc6d.s3tc.ctex"]
+dest_files=["res://.godot/imported/scene_поплавок.png-b704597a187208fc2e704328e496dc6d.s3tc.ctex", "res://.godot/imported/scene_поплавок.png-b704597a187208fc2e704328e496dc6d.etc2.ctex"]
 
 [params]
 

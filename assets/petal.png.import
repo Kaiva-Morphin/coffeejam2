@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://daubjgfj4h2rx"
 path.s3tc="res://.godot/imported/petal.png-4a429481ed3951f1b2d17f0789121ffb.s3tc.ctex"
+path.etc2="res://.godot/imported/petal.png-4a429481ed3951f1b2d17f0789121ffb.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/petal.png"
-dest_files=["res://.godot/imported/petal.png-4a429481ed3951f1b2d17f0789121ffb.s3tc.ctex"]
+dest_files=["res://.godot/imported/petal.png-4a429481ed3951f1b2d17f0789121ffb.s3tc.ctex", "res://.godot/imported/petal.png-4a429481ed3951f1b2d17f0789121ffb.etc2.ctex"]
 
 [params]
 
