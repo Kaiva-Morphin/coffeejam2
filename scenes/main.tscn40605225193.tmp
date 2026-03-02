@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://bybx2xlgi3j47" path="res://assets/flame_03.png" id="5_tbgi4"]
 [ext_resource type="Texture2D" uid="uid://pi6pur75r70m" path="res://assets/scene_удочка.png" id="5_tefeu"]
 [ext_resource type="PackedScene" uid="uid://bkqf1gxxyguo0" path="res://scenes/player.tscn" id="7_o6xl0"]
-[ext_resource type="FontFile" uid="uid://sin14qbi5xnr" path="res://assets/font/kaivs_minegram_v1.ttf" id="7_tipki"]
 [ext_resource type="Texture2D" uid="uid://dmxj6rv8wrf5n" path="res://assets/photo_2024-12-26_23-46-54.jpg" id="10_choun"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_jyhfs"]
@@ -177,7 +176,6 @@ alpha_curve = SubResource("CurveTexture_ya4ey")
 collision_mode = 2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jyhfs"]
-render_priority = 2
 transparency = 1
 blend_mode = 1
 shading_mode = 0
@@ -202,12 +200,6 @@ func hint():
 radius = 0.8720703
 height = 3.3168945
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tipki"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_85g3d"]
-radius = 0.78
-height = 2.535
-
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_85g3d"]
 data = PackedVector3Array(-43.78369, -0.5, 43.29785, -43.78369, -0.5, -43.29785, -43.78369, 0.5, -43.29785, 43.78369, -0.5, -43.29785, -43.78369, -0.5, -43.29785, -43.78369, -0.5, 43.29785, -43.78369, 0.5, -43.29785, -43.78369, -0.5, -43.29785, 43.78369, -0.5, -43.29785, -43.78369, 0.5, -43.29785, -43.78369, 0.5, 43.29785, -43.78369, -0.5, 43.29785, -43.78369, -0.5, 43.29785, -43.78369, 0.5, 43.29785, 43.78369, 0.5, 43.29785, 43.78369, 0.5, 43.29785, -43.78369, 0.5, 43.29785, -43.78369, 0.5, -43.29785, -43.78369, -0.5, 43.29785, 43.78369, -0.5, 43.29785, 43.78369, -0.5, -43.29785, 43.78369, 0.5, 43.29785, 43.78369, -0.5, 43.29785, -43.78369, -0.5, 43.29785, 43.78369, -0.5, -43.29785, 43.78369, -0.5, 43.29785, 43.78369, 0.5, 43.29785, 43.78369, -0.5, -43.29785, 43.78369, 0.5, -43.29785, -43.78369, 0.5, -43.29785, -43.78369, 0.5, -43.29785, 43.78369, 0.5, -43.29785, 43.78369, 0.5, 43.29785, 43.78369, 0.5, 43.29785, 43.78369, 0.5, -43.29785, 43.78369, -0.5, -43.29785)
 
@@ -222,6 +214,17 @@ _surfaces = [{
 "vertex_data": PackedByteArray("gCIvwgAAAL8AMS1CgCIvwgAAAL8AMS3CgCIvwgAAAD8AMS3CgCIvQgAAAL8AMS3CgCIvwgAAAL8AMS3CgCIvwgAAAL8AMS1CgCIvwgAAAD8AMS3CgCIvwgAAAL8AMS3CgCIvQgAAAL8AMS3CgCIvwgAAAD8AMS3CgCIvwgAAAD8AMS1CgCIvwgAAAL8AMS1CgCIvwgAAAL8AMS1CgCIvwgAAAD8AMS1CgCIvQgAAAD8AMS1CgCIvQgAAAD8AMS1CgCIvwgAAAD8AMS1CgCIvwgAAAD8AMS3CgCIvwgAAAL8AMS1CgCIvQgAAAL8AMS1CgCIvQgAAAL8AMS3CgCIvQgAAAD8AMS1CgCIvQgAAAL8AMS1CgCIvwgAAAL8AMS1CgCIvQgAAAL8AMS3CgCIvQgAAAL8AMS1CgCIvQgAAAD8AMS1CgCIvQgAAAL8AMS3CgCIvQgAAAD8AMS3CgCIvwgAAAD8AMS3CgCIvwgAAAD8AMS3CgCIvQgAAAD8AMS3CgCIvQgAAAD8AMS1CgCIvQgAAAD8AMS1CgCIvQgAAAD8AMS3CgCIvQgAAAL8AMS3CAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
 }]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_85g3d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ya4ey"]
+albedo_texture = ExtResource("10_choun")
+
+[sub_resource type="SphereMesh" id="SphereMesh_choun"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o6xl0"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tipki"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_choun"]
 albedo_color = Color(1, 0, 0, 1)
 
@@ -230,11 +233,29 @@ material = SubResource("StandardMaterial3D_choun")
 radius = 0.2
 height = 0.4
 
+[sub_resource type="BoxMesh" id="BoxMesh_o6xl0"]
+size = Vector3(0.1, 2, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_o6xl0"]
+data = PackedVector3Array(-0.049999997, 1, 0.5, 0.049999997, 1, 0.5, -0.049999997, -1, 0.5, 0.049999997, 1, 0.5, 0.049999997, -1, 0.5, -0.049999997, -1, 0.5, 0.049999997, 1, -0.5, -0.049999997, 1, -0.5, 0.049999997, -1, -0.5, -0.049999997, 1, -0.5, -0.049999997, -1, -0.5, 0.049999997, -1, -0.5, 0.049999997, 1, 0.5, 0.049999997, 1, -0.5, 0.049999997, -1, 0.5, 0.049999997, 1, -0.5, 0.049999997, -1, -0.5, 0.049999997, -1, 0.5, -0.049999997, 1, -0.5, -0.049999997, 1, 0.5, -0.049999997, -1, -0.5, -0.049999997, 1, 0.5, -0.049999997, -1, 0.5, -0.049999997, -1, -0.5, 0.049999997, 1, 0.5, -0.049999997, 1, 0.5, 0.049999997, 1, -0.5, -0.049999997, 1, 0.5, -0.049999997, 1, -0.5, 0.049999997, 1, -0.5, -0.049999997, -1, 0.5, 0.049999997, -1, 0.5, -0.049999997, -1, -0.5, 0.049999997, -1, 0.5, 0.049999997, -1, -0.5, -0.049999997, -1, -0.5)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_o6xl0"]
+top_radius = 0.1
+bottom_radius = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_o6xl0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85g3d"]
+albedo_color = Color(0, 0.85, 0.38250005, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_o6xl0"]
+material = SubResource("StandardMaterial3D_85g3d")
+
 [sub_resource type="GDScript" id="GDScript_o6xl0"]
 resource_name = "hints"
 script/source = "extends CanvasLayer
 
-@onready var base = $Control/CenterContainer/Hint
+@onready var base = $CenterContainer/Hint
 
 var hints : Dictionary = {}
 
@@ -254,10 +275,10 @@ func add_hint_raw(r):
 	add_hint(key, key, label)
 
 func add_center_hint(key, keycode, label):
-	_add_hint($Control/CenterContainer/VBoxContainer, key, keycode, label)
+	_add_hint($CenterContainer/VBoxContainer, key, keycode, label)
 
 func add_hint(key, keycode, label):
-	_add_hint($Control/MarginContainer/VBoxContainer, key, keycode, label)
+	_add_hint($MarginContainer/VBoxContainer, key, keycode, label)
 
 func _add_hint(node, key, keycode, label):
 	if hints.get(key): return
@@ -267,16 +288,12 @@ func _add_hint(node, key, keycode, label):
 	hints[key] = hint
 	hint.show()
 
-func rm_hint(key):
+func remove_hint(key):
 	var h = hints.get(key)
 	if h == null: return
 	h.queue_free()
 	hints.erase(key)
 "
-
-[sub_resource type="Theme" id="Theme_o6xl0"]
-default_font = ExtResource("7_tipki")
-default_font_size = 32
 
 [sub_resource type="GDScript" id="GDScript_tipki"]
 resource_name = "hint_record"
@@ -290,15 +307,10 @@ func set_hint(key, text):
 	label.text = text
 "
 
-[sub_resource type="LabelSettings" id="LabelSettings_o6xl0"]
-font_size = 40
-outline_size = 8
-outline_color = Color(0.22, 0.22, 0.22, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6xl0"]
-content_margin_left = 13.0
+content_margin_left = 11.0
 content_margin_right = 11.0
-content_margin_bottom = 6.0
+content_margin_bottom = 4.0
 bg_color = Color(0.4236506, 0.42365065, 0.42365053, 1)
 border_width_left = 3
 border_width_top = 3
@@ -309,35 +321,6 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_85g3d"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ya4ey"]
-albedo_texture = ExtResource("10_choun")
-
-[sub_resource type="SphereMesh" id="SphereMesh_choun"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_o6xl0"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_tipki"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_o6xl0"]
-size = Vector3(0.1, 2, 1)
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_o6xl0"]
-data = PackedVector3Array(-0.049999997, 1, 0.5, 0.049999997, 1, 0.5, -0.049999997, -1, 0.5, 0.049999997, 1, 0.5, 0.049999997, -1, 0.5, -0.049999997, -1, 0.5, 0.049999997, 1, -0.5, -0.049999997, 1, -0.5, 0.049999997, -1, -0.5, -0.049999997, 1, -0.5, -0.049999997, -1, -0.5, 0.049999997, -1, -0.5, 0.049999997, 1, 0.5, 0.049999997, 1, -0.5, 0.049999997, -1, 0.5, 0.049999997, 1, -0.5, 0.049999997, -1, -0.5, 0.049999997, -1, 0.5, -0.049999997, 1, -0.5, -0.049999997, 1, 0.5, -0.049999997, -1, -0.5, -0.049999997, 1, 0.5, -0.049999997, -1, 0.5, -0.049999997, -1, -0.5, 0.049999997, 1, 0.5, -0.049999997, 1, 0.5, 0.049999997, 1, -0.5, -0.049999997, 1, 0.5, -0.049999997, 1, -0.5, 0.049999997, 1, -0.5, -0.049999997, -1, 0.5, 0.049999997, -1, 0.5, -0.049999997, -1, -0.5, 0.049999997, -1, 0.5, 0.049999997, -1, -0.5, -0.049999997, -1, -0.5)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_o6xl0"]
-top_radius = 0.1
-bottom_radius = 0.1
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_o6xl0"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85g3d"]
-albedo_color = Color(0, 0.85, 0.38250005, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_o6xl0"]
-material = SubResource("StandardMaterial3D_85g3d")
 
 [node name="Main" type="Node3D" unique_id=696012208]
 
@@ -392,39 +375,18 @@ shadow_enabled = true
 omni_range = 6.0863085
 
 [node name="CampFire" type="StaticBody3D" parent="костер" unique_id=781038699 groups=["campfire", "interactable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18152022, 0.7052257, 0.039391518)
 script = SubResource("GDScript_85g3d")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="костер/CampFire" unique_id=1406616092]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65844727, 0)
 shape = SubResource("CapsuleShape3D_o6xl0")
 
-[node name="AreaBurn" type="Area3D" parent="костер" unique_id=287986179 groups=["zefir_burn"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12389314, 0.85173583, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="костер/AreaBurn" unique_id=1985809981]
-shape = SubResource("CapsuleShape3D_tipki")
-debug_color = Color(0.9848147, 0, 0.3444455, 0.41960785)
-
-[node name="AreaCook" type="Area3D" parent="костер" unique_id=394954741 groups=["zefir_cook"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12389314, 0.85173583, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="костер/AreaCook" unique_id=1521748417]
-shape = SubResource("CapsuleShape3D_85g3d")
-debug_color = Color(0.86059564, 0.36169022, 0, 0.41960785)
-
 [node name="GPUParticlesCollisionHeightField3D" type="GPUParticlesCollisionHeightField3D" parent="." unique_id=1325627679]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 3.2004395, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2004395, 5)
 cull_mask = 4293918721
 size = Vector3(81, 15.253418, 55)
 resolution = 1
 follow_camera_enabled = true
-
-[node name="Camera3D3" type="Camera3D" parent="." unique_id=723717879]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5235538, 6)
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=767912654]
-root_node = NodePath("")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1862998106]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
@@ -438,31 +400,108 @@ size = Vector3(87.56738, 1, 86.5957)
 shape = SubResource("ConcavePolygonShape3D_85g3d")
 
 [node name="CSGBakedMeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1614473087]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0019122362, 0.0021429062, -0.0010812283)
 mesh = SubResource("ArrayMesh_choun")
+
+[node name="Camera3D3" type="Camera3D" parent="." unique_id=723717879]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5235538, 6)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=767912654]
+root_node = NodePath("")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=681658535]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -3)
+center_of_mass_mode = 1
+can_sleep = false
+angular_damp = 2.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=867243827]
+shape = SubResource("SphereShape3D_85g3d")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=2129117006]
+material_override = SubResource("StandardMaterial3D_ya4ey")
+mesh = SubResource("SphereMesh_choun")
+
+[node name="RigidBody3D3" type="RigidBody3D" parent="." unique_id=1467022530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -5)
+center_of_mass_mode = 1
+can_sleep = false
+angular_damp = 2.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D3" unique_id=1403813229]
+shape = SubResource("BoxShape3D_o6xl0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D3" unique_id=286457430]
+material_override = SubResource("StandardMaterial3D_ya4ey")
+mesh = SubResource("BoxMesh_tipki")
 
 [node name="dbg" type="MeshInstance3D" parent="." unique_id=716976208]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("SphereMesh_ya4ey")
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=382078497]
+
+[node name="Door" type="Node3D" parent="." unique_id=1764444866]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -1.461232, 0)
+
+[node name="HingeJoint3D" type="HingeJoint3D" parent="Door" unique_id=281761794]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+node_a = NodePath("../RigidBody3D")
+angular_limit/enable = true
+angular_limit/upper = 1.998402
+angular_limit/lower = -2.1554816
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Door" unique_id=1005431874 groups=["pickable_joint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.77681875)
+mass = 5.0
+linear_damp = 5.0
+angular_damp = 5.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Door/RigidBody3D" unique_id=703163179]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1400739)
+mesh = SubResource("BoxMesh_o6xl0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door/RigidBody3D" unique_id=34873488]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1400739)
+shape = SubResource("ConcavePolygonShape3D_o6xl0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Door" unique_id=1286974205]
+mesh = SubResource("CylinderMesh_o6xl0")
+
+[node name="PinJoint3D" type="PinJoint3D" parent="." unique_id=1540515714]
+node_a = NodePath("../RigidBody3D2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PinJoint3D" unique_id=478213968]
+shape = SubResource("SphereShape3D_o6xl0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PinJoint3D" unique_id=1760644486]
+mesh = SubResource("SphereMesh_o6xl0")
+
+[node name="RigidBody3D2" type="RigidBody3D" parent="." unique_id=161029429 groups=["pickable_joint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
+center_of_mass_mode = 1
+can_sleep = false
+angular_damp = 2.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D2" unique_id=146607218]
+shape = SubResource("SphereShape3D_85g3d")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D2" unique_id=2076012222]
+material_override = SubResource("StandardMaterial3D_ya4ey")
+mesh = SubResource("SphereMesh_choun")
+
 [node name="Player" parent="." unique_id=2016181414 instance=ExtResource("7_o6xl0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.82126284, -1.4999995, -1.9994183)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4398694, 1.5000005, 5.0005817)
+SPEED = null
+LOSS_SPEED = null
+GRAVITY_SCALE = null
+MOUSE_SENSITIVITY = null
+TILT_LOWER_LIMIT = null
+TILT_UPPER_LIMIT = null
 
 [node name="Hints" type="CanvasLayer" parent="." unique_id=542013963]
 script = SubResource("GDScript_o6xl0")
 
-[node name="Control" type="Control" parent="Hints" unique_id=1116337448]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme = SubResource("Theme_o6xl0")
-
-[node name="MarginContainer" type="MarginContainer" parent="Hints/Control" unique_id=527951245]
-layout_mode = 1
+[node name="MarginContainer" type="MarginContainer" parent="Hints" unique_id=527951245]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -472,12 +511,11 @@ grow_horizontal = 0
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Hints/Control/MarginContainer" unique_id=1326833220]
+[node name="VBoxContainer" type="VBoxContainer" parent="Hints/MarginContainer" unique_id=1326833220]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="CenterContainer" type="CenterContainer" parent="Hints/Control" unique_id=1532926908]
-layout_mode = 1
+[node name="CenterContainer" type="CenterContainer" parent="Hints" unique_id=1532926908]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -485,7 +523,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Hint" type="HBoxContainer" parent="Hints/Control/CenterContainer" unique_id=541552766]
+[node name="Hint" type="HBoxContainer" parent="Hints/CenterContainer" unique_id=541552766]
 visible = false
 layout_mode = 2
 mouse_filter = 2
@@ -493,109 +531,20 @@ theme_override_constants/separation = 8
 alignment = 2
 script = SubResource("GDScript_tipki")
 
-[node name="Label" type="Label" parent="Hints/Control/CenterContainer/Hint" unique_id=199465843]
+[node name="Label" type="Label" parent="Hints/CenterContainer/Hint" unique_id=199465843]
 layout_mode = 2
 text = "Жарить маршмеллов"
-label_settings = SubResource("LabelSettings_o6xl0")
 
-[node name="Btn" type="Label" parent="Hints/Control/CenterContainer/Hint" unique_id=270522985]
+[node name="Btn" type="Label" parent="Hints/CenterContainer/Hint" unique_id=270522985]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_o6xl0")
 text = "E"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Hints/Control/CenterContainer" unique_id=1482335693]
+[node name="VBoxContainer" type="VBoxContainer" parent="Hints/CenterContainer" unique_id=1482335693]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Control" type="Control" parent="Hints/Control/CenterContainer/VBoxContainer" unique_id=35354746]
+[node name="Control" type="Control" parent="Hints/CenterContainer/VBoxContainer" unique_id=35354746]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 mouse_filter = 2
-
-[node name="Node3D" type="Node3D" parent="." unique_id=813432536]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.364199, 0)
-visible = false
-
-[node name="RigidBody3D" type="RigidBody3D" parent="Node3D" unique_id=681658535]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -3)
-center_of_mass_mode = 1
-can_sleep = false
-angular_damp = 2.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/RigidBody3D" unique_id=867243827]
-shape = SubResource("SphereShape3D_85g3d")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/RigidBody3D" unique_id=2129117006]
-material_override = SubResource("StandardMaterial3D_ya4ey")
-mesh = SubResource("SphereMesh_choun")
-
-[node name="RigidBody3D3" type="RigidBody3D" parent="Node3D" unique_id=1467022530]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -5)
-center_of_mass_mode = 1
-can_sleep = false
-angular_damp = 2.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/RigidBody3D3" unique_id=1403813229]
-shape = SubResource("BoxShape3D_o6xl0")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/RigidBody3D3" unique_id=286457430]
-material_override = SubResource("StandardMaterial3D_ya4ey")
-mesh = SubResource("BoxMesh_tipki")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D" unique_id=382078497]
-skeleton = NodePath("../..")
-
-[node name="Door" type="Node3D" parent="Node3D" unique_id=1764444866]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -1.461232, 0)
-
-[node name="HingeJoint3D" type="HingeJoint3D" parent="Node3D/Door" unique_id=281761794]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
-node_a = NodePath("../RigidBody3D")
-angular_limit/enable = true
-angular_limit/upper = 1.998402
-angular_limit/lower = -2.1554816
-
-[node name="RigidBody3D" type="RigidBody3D" parent="Node3D/Door" unique_id=1005431874 groups=["pickable_joint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.77681875)
-mass = 5.0
-linear_damp = 5.0
-angular_damp = 5.0
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/Door/RigidBody3D" unique_id=703163179]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1400739)
-mesh = SubResource("BoxMesh_o6xl0")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/Door/RigidBody3D" unique_id=34873488]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1400739)
-shape = SubResource("ConcavePolygonShape3D_o6xl0")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/Door" unique_id=1286974205]
-mesh = SubResource("CylinderMesh_o6xl0")
-
-[node name="PinJoint3D" type="PinJoint3D" parent="Node3D" unique_id=1540515714]
-node_a = NodePath("../RigidBody3D2")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/PinJoint3D" unique_id=478213968]
-shape = SubResource("SphereShape3D_o6xl0")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/PinJoint3D" unique_id=1760644486]
-mesh = SubResource("SphereMesh_o6xl0")
-
-[node name="RigidBody3D2" type="RigidBody3D" parent="Node3D" unique_id=161029429 groups=["pickable_joint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
-center_of_mass_mode = 1
-can_sleep = false
-angular_damp = 2.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/RigidBody3D2" unique_id=146607218]
-shape = SubResource("SphereShape3D_85g3d")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/RigidBody3D2" unique_id=2076012222]
-material_override = SubResource("StandardMaterial3D_ya4ey")
-mesh = SubResource("SphereMesh_choun")
-
-[node name="zefirka" type="Node3D" parent="." unique_id=698626750]
-
-[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=501619670]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8475385, 0, -4.1884084)
-light_energy = 2.0

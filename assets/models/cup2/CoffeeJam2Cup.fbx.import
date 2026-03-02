@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dxxnodlgg8pdn"
-path="res://.godot/imported/brevno.fbx-ce4355d6e5b2b20483d02c6ecc95f524.scn"
+uid="uid://d25aajbwmb74k"
+path="res://.godot/imported/CoffeeJam2Cup.fbx-a7ffbcf3cf65e7375a6cc06f30658bfc.scn"
 
 [deps]
 
-source_file="res://assets/models/brevno.fbx"
-dest_files=["res://.godot/imported/brevno.fbx-ce4355d6e5b2b20483d02c6ecc95f524.scn"]
+source_file="res://assets/models/cup2/CoffeeJam2Cup.fbx"
+dest_files=["res://.godot/imported/CoffeeJam2Cup.fbx-a7ffbcf3cf65e7375a6cc06f30658bfc.scn"]
 
 [params]
 

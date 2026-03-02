@@ -29,6 +29,7 @@ var held_distance = 10.0
 @export var dbg : Node3D
 
 func _process(_dt: float) -> void:
+	var body = PICKUP_RAYCAST.get_collider()
 	if Input.is_action_just_released("lmb"):
 		if picked_item == null: return
 		picked_item.sleeping = false
@@ -36,7 +37,6 @@ func _process(_dt: float) -> void:
 		picked_item = null
 	
 	if Input.is_action_just_pressed("lmb"):
-		var body = PICKUP_RAYCAST.get_collider()
 		if body == null:
 			return
 		if picked_item != null: return
@@ -51,7 +51,7 @@ func _process(_dt: float) -> void:
 			# how to make it relative to rotation? (in local space)
 			picked_item.center_of_mass = picked_item.to_local(d)
 	#print(picked_item)
-
+	
 #func _integrate_forces():
 	if picked_item:
 		var target_pos = PICKUP_RAYCAST.global_position - PICKUP_RAYCAST.global_transform.basis.z * held_distance

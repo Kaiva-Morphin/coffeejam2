@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://d25aajbwmb74k"
-path="res://.godot/imported/CoffeeJam2Cup.fbx-1ccc648e76d0d906b2155dba237b4b54.scn"
+uid="uid://d13ihwbobxkc4"
+path="res://.godot/imported/zefirka.fbx-67ef7783c7369339e7b7a73552125348.scn"
 
 [deps]
 
-source_file="res://assets/models/CoffeeJam2Cup.fbx"
-dest_files=["res://.godot/imported/CoffeeJam2Cup.fbx-1ccc648e76d0d906b2155dba237b4b54.scn"]
+source_file="res://assets/models/zef/zefirka.fbx"
+dest_files=["res://.godot/imported/zefirka.fbx-67ef7783c7369339e7b7a73552125348.scn"]
 
 [params]
 
