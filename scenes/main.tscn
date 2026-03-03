@@ -5,35 +5,42 @@
 [ext_resource type="Texture2D" uid="uid://bqosws81xqqi3" path="res://assets/scene_pine_tree.png" id="4_jyhfs"]
 [ext_resource type="Texture2D" uid="uid://bybx2xlgi3j47" path="res://assets/flame_03.png" id="5_tbgi4"]
 [ext_resource type="Texture2D" uid="uid://pi6pur75r70m" path="res://assets/scene_удочка.png" id="5_tefeu"]
+[ext_resource type="Texture2D" uid="uid://dh7ocj54klayw" path="res://assets/strelka.png" id="7_choun"]
+[ext_resource type="PackedScene" uid="uid://bliy8yxmk7roe" path="res://scenes/snowball.tscn" id="7_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://bkqf1gxxyguo0" path="res://scenes/player.tscn" id="7_o6xl0"]
 [ext_resource type="FontFile" uid="uid://sin14qbi5xnr" path="res://assets/font/kaivs_minegram_v1.ttf" id="7_tipki"]
+[ext_resource type="Texture2D" uid="uid://dfjqvrocoblbb" path="res://assets/track.png" id="8_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://c83tqxxpfsbkr" path="res://scenes/coffee_jam_2_cup.tscn" id="9_85g3d"]
+[ext_resource type="Texture2D" uid="uid://ddwtxh4j3j601" path="res://assets/zone.png" id="9_eb6dy"]
 [ext_resource type="Texture2D" uid="uid://dmxj6rv8wrf5n" path="res://assets/photo_2024-12-26_23-46-54.jpg" id="10_choun"]
+[ext_resource type="PackedScene" uid="uid://bja5by5x4085c" path="res://scenes/lightblob.tscn" id="11_jkv2x"]
+[ext_resource type="PackedScene" uid="uid://dels5ka77oqeu" path="res://scenes/coffe_maker.tscn" id="11_trceg"]
+[ext_resource type="PackedScene" uid="uid://dalasf058f3hw" path="res://scenes/lights.tscn" id="14_a8y0u"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_jyhfs"]
 seed = 3
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3g7ry"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gqmmt"]
 noise = SubResource("FastNoiseLite_jyhfs")
 seamless = true
 invert = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_tbgi4"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_746c1"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_yc10j"]
 noise = SubResource("FastNoiseLite_tbgi4")
 seamless = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_tefeu"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ywqbu"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_jscy8"]
 noise = SubResource("FastNoiseLite_tefeu")
 seamless = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o6xl0"]
 shader = ExtResource("1_0wfyh")
-shader_parameter/cloud_shape_sampler = SubResource("NoiseTexture2D_746c1")
-shader_parameter/cloud_curves = SubResource("NoiseTexture2D_3g7ry")
+shader_parameter/cloud_shape_sampler = SubResource("NoiseTexture2D_yc10j")
+shader_parameter/cloud_curves = SubResource("NoiseTexture2D_gqmmt")
 shader_parameter/clouds_samples = 16
 shader_parameter/shadow_sample = 2
 shader_parameter/clouds_density = 0.40000000596048
@@ -41,7 +48,7 @@ shader_parameter/clouds_scale = 0.80000000447036
 shader_parameter/clouds_smoothness = 0.07999999821184
 shader_parameter/clouds_light_color = Color(0.21600342, 0.27101564, 0.3450784, 1)
 shader_parameter/clouds_shadow_intensity = 10.0
-shader_parameter/high_clouds_sampler = SubResource("NoiseTexture2D_ywqbu")
+shader_parameter/high_clouds_sampler = SubResource("NoiseTexture2D_jscy8")
 shader_parameter/high_clouds_density = 0.80000001192096
 shader_parameter/top_color = Color(0.07830001, 0.14220004, 0.27, 1)
 shader_parameter/bottom_color = Color(0.08799448, 0.10706589, 0.17744392, 1)
@@ -54,12 +61,12 @@ shader_parameter/stars_intensity = 4.60000006854552
 shader_parameter/shooting_stars_intensity = 10.0
 shader_parameter/shooting_star_tint = Color(0, 0, 0, 1)
 
-[sub_resource type="Sky" id="Sky_dcmoc"]
+[sub_resource type="Sky" id="Sky_pm3ni"]
 sky_material = SubResource("ShaderMaterial_o6xl0")
 
 [sub_resource type="Environment" id="Environment_tbgi4"]
 background_mode = 2
-sky = SubResource("Sky_dcmoc")
+sky = SubResource("Sky_pm3ni")
 tonemap_mode = 2
 glow_enabled = true
 volumetric_fog_enabled = true
@@ -196,7 +203,7 @@ resource_name = "fireplace"
 script/source = "extends StaticBody3D
 
 func hint():
-	return [\"E\", \"Жарить маршмеллов\"]
+	return [\"e\", \"Жарить маршмеллов\"]
 "
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_o6xl0"]
@@ -258,6 +265,9 @@ func hint_raw(r):
 
 func center_hint(key, keycode, label):
 	_add_hint($Control/CenterContainer/VBoxContainer, true, key, keycode, label)
+
+func center_top_hint(key, keycode, label):
+	_add_hint($Control/CenterContainer/CenterTop, true, key, keycode, label)
 
 func hint(key, keycode, label):
 	_add_hint($Control/MarginContainer/VBoxContainer, false, key, keycode, label)
@@ -347,20 +357,6 @@ albedo_color = Color(0, 0.85, 0.38250005, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_o6xl0"]
 material = SubResource("StandardMaterial3D_85g3d")
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_ya4ey"]
-_surfaces = [{
-"aabb": AABB(-0.5, -0.1, -0.5, 1, 1, 1),
-"attribute_data": PackedByteArray("AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAIA/zMxMPgAAAAAAAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAMzMTD4AAAAAAACAPwAAgD8AAAAAAAAAAMzMTD4AAIA/zMxMPgAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AAAAAAAAgD8AAIA/zMxMPgAAAADMzEw+AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD/MzEw+AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/zcxMPgAAAADNzEw+AAAAAAAAgD/NzEw/AACAP83MTD8AAAAAAAAAAAAAgD/NzEw/AACAP83MTD8AAAAAAAAAAAAAAAAAAAAAzcxMPwAAgD/NzEw/AACAPwAAgD8AAAAAzcxMPgAAAAAAAIA/AAAAAAAAAAAAAAAAAACAP83MTD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD/NzEw/AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD/NzEw/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/"),
-"format": 34359738391,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 72,
-"vertex_data": PackedByteArray("AAAAv83MzL0AAAC/AAAAv83MzD0AAAC/AAAAv83MzL0AAAA/AAAAv83MzL0AAAC/AAAAP83MzL0AAAC/AAAAv83MzD0AAAC/AAAAv83MzL0AAAC/AAAAv83MzL0AAAA/AAAAP83MzL0AAAC/AAAAv83MzD0AAAC/mpmZPs3MzD0AAAC/AAAAv83MzD0AAAA/AAAAv83MzL0AAAA/AAAAv83MzD0AAAC/AAAAv83MzD0AAAA/AAAAv83MzL0AAAA/AAAAv83MzD0AAAA/mpmZPs3MzD0AAAA/AAAAv83MzD0AAAC/AAAAP83MzL0AAAC/mpmZPs3MzD0AAAC/mpmZPs3MzD0AAAC/AAAAP83MzL0AAAC/AAAAP83MzD0AAAC/AAAAP83MzL0AAAC/AAAAP83MzD0AAAA/AAAAP83MzD0AAAC/AAAAv83MzD0AAAA/mpmZPs3MzD0AAAC/mpmZPs3MzD0AAAA/AAAAv83MzL0AAAA/AAAAP83MzL0AAAA/AAAAP83MzL0AAAC/AAAAv83MzL0AAAA/mpmZPs3MzD0AAAA/AAAAP83MzD0AAAA/AAAAv83MzL0AAAA/AAAAP83MzD0AAAA/AAAAP83MzL0AAAA/AAAAP83MzL0AAAC/AAAAP83MzL0AAAA/AAAAP83MzD0AAAA/mpmZPmZmZj8AAAC/mpmZPs3MzD0AAAC/AAAAP83MzD0AAAC/AAAAP2ZmZj8AAAC/AAAAP83MzD0AAAC/AAAAP83MzD0AAAA/mpmZPmZmZj8AAAA/mpmZPs3MzD0AAAA/mpmZPs3MzD0AAAC/AAAAP2ZmZj8AAAA/AAAAP83MzD0AAAA/mpmZPs3MzD0AAAA/mpmZPmZmZj8AAAC/AAAAP83MzD0AAAC/AAAAP2ZmZj8AAAC/mpmZPmZmZj8AAAC/mpmZPmZmZj8AAAA/mpmZPs3MzD0AAAC/mpmZPmZmZj8AAAC/AAAAP2ZmZj8AAAC/AAAAP2ZmZj8AAAA/AAAAP2ZmZj8AAAC/AAAAP83MzD0AAAA/AAAAP2ZmZj8AAAA/mpmZPmZmZj8AAAA/AAAAP2ZmZj8AAAA/mpmZPs3MzD0AAAA/mpmZPmZmZj8AAAC/AAAAP2ZmZj8AAAA/mpmZPmZmZj8AAAA/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//////wAA/z//////AAD/P/////8AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//////wAA/z//////AAD/P/////8AAP8//////wAA/z//////AAD/P/////8AAP8/////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8/////f/9//n////9//3/+f////3//f/5/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA")
-}]
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_eb6dy"]
-data = PackedVector3Array(-0.5, -0.1, -0.5, -0.5, 0.1, -0.5, -0.5, -0.1, 0.5, -0.5, -0.1, -0.5, 0.5, -0.1, -0.5, -0.5, 0.1, -0.5, -0.5, -0.1, -0.5, -0.5, -0.1, 0.5, 0.5, -0.1, -0.5, -0.5, 0.1, -0.5, 0.3, 0.1, -0.5, -0.5, 0.1, 0.5, -0.5, -0.1, 0.5, -0.5, 0.1, -0.5, -0.5, 0.1, 0.5, -0.5, -0.1, 0.5, -0.5, 0.1, 0.5, 0.3, 0.1, 0.5, -0.5, 0.1, -0.5, 0.5, -0.1, -0.5, 0.3, 0.1, -0.5, 0.3, 0.1, -0.5, 0.5, -0.1, -0.5, 0.5, 0.1, -0.5, 0.5, -0.1, -0.5, 0.5, 0.1, 0.5, 0.5, 0.1, -0.5, -0.5, 0.1, 0.5, 0.3, 0.1, -0.5, 0.3, 0.1, 0.5, -0.5, -0.1, 0.5, 0.5, -0.1, 0.5, 0.5, -0.1, -0.5, -0.5, -0.1, 0.5, 0.3, 0.1, 0.5, 0.5, 0.1, 0.5, -0.5, -0.1, 0.5, 0.5, 0.1, 0.5, 0.5, -0.1, 0.5, 0.5, -0.1, -0.5, 0.5, -0.1, 0.5, 0.5, 0.1, 0.5, 0.3, 0.9, -0.5, 0.3, 0.1, -0.5, 0.5, 0.1, -0.5, 0.5, 0.9, -0.5, 0.5, 0.1, -0.5, 0.5, 0.1, 0.5, 0.3, 0.9, 0.5, 0.3, 0.1, 0.5, 0.3, 0.1, -0.5, 0.5, 0.9, 0.5, 0.5, 0.1, 0.5, 0.3, 0.1, 0.5, 0.3, 0.9, -0.5, 0.5, 0.1, -0.5, 0.5, 0.9, -0.5, 0.3, 0.9, -0.5, 0.3, 0.9, 0.5, 0.3, 0.1, -0.5, 0.3, 0.9, -0.5, 0.5, 0.9, -0.5, 0.5, 0.9, 0.5, 0.5, 0.9, -0.5, 0.5, 0.1, 0.5, 0.5, 0.9, 0.5, 0.3, 0.9, 0.5, 0.5, 0.9, 0.5, 0.3, 0.1, 0.5, 0.3, 0.9, -0.5, 0.5, 0.9, 0.5, 0.3, 0.9, 0.5)
-
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_85g3d"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_choun"]
@@ -371,7 +367,7 @@ data = PackedVector3Array(-0.5, -0.1, -0.5, -0.5, 0.1, -0.5, -0.5, -0.1, 0.5, -0
 environment = SubResource("Environment_tbgi4")
 
 [node name="Pine4" type="MeshInstance3D" parent="." unique_id=1988001568]
-transform = Transform3D(2.736, 0, 0, 0, 2.736, 0, 0, 0, 2.736, 8.110151, 2, 5.570304)
+transform = Transform3D(2.736, 0, 0, 0, 2.736, 0, 0, 0, 2.736, 8.110151, 28.361753, 5.570304)
 mesh = SubResource("ArrayMesh_tbgi4")
 skeleton = NodePath("")
 
@@ -381,7 +377,7 @@ skeleton = NodePath("")
 shape = SubResource("ConcavePolygonShape3D_tbgi4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1914045670]
-transform = Transform3D(1, 0, 0, 0, -0.66110235, 0.75029576, 0, -0.75029576, -0.66110235, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -0.66110235, 0.75029576, 0, -0.75029576, -0.66110235, 0, 26.361753, 0)
 layers = 3
 light_color = Color(0.48741895, 0.79786074, 0.9999998, 1)
 light_energy = 0.325
@@ -390,7 +386,7 @@ shadow_enabled = true
 directional_shadow_mode = 0
 
 [node name="костер" type="MeshInstance3D" parent="." unique_id=1068792823]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2866864, -2.3160968, -5.1909456)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2866864, 24.045656, -5.1909456)
 mesh = SubResource("ArrayMesh_o6xl0")
 skeleton = NodePath("")
 
@@ -442,14 +438,14 @@ shape = SubResource("CapsuleShape3D_85g3d")
 debug_color = Color(0.86059564, 0.36169022, 0, 0.41960785)
 
 [node name="Camera3D3" type="Camera3D" parent="." unique_id=723717879]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5235538, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.885307, 6)
 current = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=767912654]
 root_node = NodePath("")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1862998106]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.361753, 0)
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="StaticBody3D" unique_id=1510288379]
 
@@ -464,8 +460,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0019122362, 0.0021429062, -
 mesh = SubResource("ArrayMesh_choun")
 
 [node name="dbg" type="MeshInstance3D" parent="." unique_id=716976208]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.361753, 0)
 mesh = SubResource("SphereMesh_ya4ey")
+
+[node name="Snowball" parent="." unique_id=1880263173 instance=ExtResource("7_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -3.8404293)
+
+[node name="Snowball2" parent="." unique_id=1657797852 instance=ExtResource("7_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -3.0020967)
+
+[node name="Snowball3" parent="." unique_id=328614528 instance=ExtResource("7_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -2.1020143)
 
 [node name="Hints" type="CanvasLayer" parent="." unique_id=542013963]
 script = SubResource("GDScript_o6xl0")
@@ -531,9 +536,15 @@ custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 mouse_filter = 2
 
+[node name="CenterTop" type="VBoxContainer" parent="Hints/Control/CenterContainer" unique_id=10923209]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+mouse_filter = 2
+
 [node name="CoffeeMinigame" type="CanvasLayer" parent="." unique_id=384051320]
 
 [node name="Control" type="Control" parent="CoffeeMinigame" unique_id=1501058509]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -542,12 +553,27 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="CoffeeMinigame/Control" unique_id=1357180532]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Zone" type="CenterContainer" parent="CoffeeMinigame/Control" unique_id=1053324467]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -187.27502
+offset_top = -458.308
+offset_right = 188.72498
+offset_bottom = -353.07703
+grow_horizontal = 2
+grow_vertical = 0
+rotation = 0.25830874
+pivot_offset = Vector2(188, 2048)
 
-[node name="Panel" type="Panel" parent="CoffeeMinigame/Control" unique_id=950284894]
+[node name="TextureRect" type="TextureRect" parent="CoffeeMinigame/Control/Zone" unique_id=2096846394]
+layout_mode = 2
+texture = ExtResource("9_eb6dy")
+
+[node name="Strelka" type="CenterContainer" parent="CoffeeMinigame/Control" unique_id=143229981]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -555,20 +581,40 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -20.0
-offset_top = -249.0
-offset_right = 20.0
-offset_bottom = -209.0
+offset_top = -418.63
+offset_right = 12.0
+offset_bottom = 93.369995
 grow_horizontal = 2
 grow_vertical = 0
+rotation = -0.36651915
+pivot_offset = Vector2(20, 2048)
+
+[node name="TextureRect" type="TextureRect" parent="CoffeeMinigame/Control/Strelka" unique_id=1357180532]
+layout_mode = 2
+texture = ExtResource("7_choun")
+
+[node name="TextureRect" type="TextureRect" parent="CoffeeMinigame/Control" unique_id=97842488]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -800.0
+offset_top = -450.0
+offset_right = 800.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("8_ya4ey")
 
 [node name="Node3D" type="Node3D" parent="." unique_id=813432536]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.364199, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 42.725952, 0)
 visible = false
 
 [node name="RigidBody3D" type="RigidBody3D" parent="Node3D" unique_id=681658535]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -3)
 center_of_mass_mode = 1
-can_sleep = false
+freeze = true
 angular_damp = 2.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/RigidBody3D" unique_id=867243827]
@@ -578,10 +624,13 @@ shape = SubResource("SphereShape3D_85g3d")
 material_override = SubResource("StandardMaterial3D_ya4ey")
 mesh = SubResource("SphereMesh_choun")
 
+[node name="lightblob" parent="Node3D/RigidBody3D" unique_id=859245864 instance=ExtResource("11_jkv2x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7235224, -28.971247, -2.1712246)
+
 [node name="RigidBody3D3" type="RigidBody3D" parent="Node3D" unique_id=1467022530]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -5)
 center_of_mass_mode = 1
-can_sleep = false
+freeze = true
 angular_damp = 2.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/RigidBody3D3" unique_id=1403813229]
@@ -644,44 +693,40 @@ material_override = SubResource("StandardMaterial3D_ya4ey")
 mesh = SubResource("SphereMesh_choun")
 
 [node name="zefirka" type="Node3D" parent="." unique_id=698626750]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.361753, 0)
 
-[node name="CoffeMachine" type="StaticBody3D" parent="." unique_id=1037917492 groups=["coffeemachine", "interactable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2392788, -1.2470635, -5.6474123)
-
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="CoffeMachine" unique_id=1566198661]
-
-[node name="CSGBox3D" type="CSGBox3D" parent="CoffeMachine/CSGCombiner3D" unique_id=1185140688]
-size = Vector3(1, 0.2, 1)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="CoffeMachine/CSGCombiner3D" unique_id=1910938967]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.4, 0)
-size = Vector3(0.2, 1, 1)
-
-[node name="CSGBakedMeshInstance3D" type="MeshInstance3D" parent="CoffeMachine" unique_id=1340218500]
-mesh = SubResource("ArrayMesh_ya4ey")
-skeleton = NodePath("")
-
-[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="CoffeMachine" unique_id=523753098]
-shape = SubResource("ConcavePolygonShape3D_eb6dy")
-
-[node name="Node3D" type="Node3D" parent="CoffeMachine" unique_id=1029598341]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.71007997, 0)
+[node name="CoffeMaker" parent="." unique_id=63952601 instance=ExtResource("11_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1625419, 25.11469, -5.6474123)
 
 [node name="CoffeeJam2Cup" parent="." unique_id=62438432 instance=ExtResource("9_85g3d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21472359, -0.9416583, -5.614239)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1379867, 25.420095, -5.614239)
 
 [node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=299567269]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.361753, 0)
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=1020342551]
 
 [node name="Player" parent="." unique_id=2016181414 instance=ExtResource("7_o6xl0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47151875, -0.6300049, -2.0870588)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6907306, 27.279715, -2.90516)
 
 [node name="StaticBody3D3" type="StaticBody3D" parent="." unique_id=266957579 groups=["interactable", "log"]]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.7377784, -2.2959852, -5.0498962)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.7377784, 24.06577, -5.0498962)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3" unique_id=1519429009]
 shape = SubResource("CylinderShape3D_85g3d")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D3" unique_id=518616939]
 mesh = SubResource("CylinderMesh_choun")
+
+[node name="StaticBody3D4" type="StaticBody3D" parent="." unique_id=1541209555 groups=["interactable", "log"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.116454005, 25.869095, -5.0498962)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D4" unique_id=245233795]
+shape = SubResource("CylinderShape3D_85g3d")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D4" unique_id=275888227]
+mesh = SubResource("CylinderMesh_choun")
+
+[node name="Lights" parent="." unique_id=662336235 instance=ExtResource("14_a8y0u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.361753, -7.822136)

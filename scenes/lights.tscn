@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dalasf058f3hw"]
+
+[ext_resource type="Script" uid="uid://08qoyq67d7vp" path="res://scenes/lights.gd" id="1_yky8o"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_trceg"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a8y0u"]
+albedo_color = Color(0.30692267, 0.3069227, 0.3069227, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_trceg"]
+points = PackedVector3Array(0, 0.25, 0.25, 0.25, -0.25, 0.25, 0, 0.25, -0.25, -0.25, -0.25, 0.25, 0.25, -0.25, -0.25, -0.25, -0.25, -0.25)
+
+[node name="Lights" type="RigidBody3D" unique_id=662336235 groups=["heldable", "interactable", "pickable"]]
+can_sleep = false
+script = ExtResource("1_yky8o")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1492757200 groups=["interactable", "pickable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.22065878)
+mesh = SubResource("PrismMesh_trceg")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_a8y0u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1956142796]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.22065878)
+shape = SubResource("ConvexPolygonShape3D_trceg")

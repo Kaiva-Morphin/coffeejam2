@@ -4,6 +4,8 @@
 [ext_resource type="Shader" uid="uid://df1rd0imf8it8" path="res://scenes/fog.gdshader" id="1_dqkch"]
 [ext_resource type="Texture2D" uid="uid://c74mo4drhst43" path="res://assets/models/cat/cat.png" id="2_g2els"]
 [ext_resource type="Texture2D" uid="uid://05mqjsy04vxq" path="res://assets/models/cup2/CupTexture.png" id="3_qhqgy"]
+[ext_resource type="Shader" uid="uid://cr0sb2xdyyg51" path="res://sky.gdshader" id="5_tuyoq"]
+[ext_resource type="Texture2D" uid="uid://da6yp7b5yrlxj" path="res://Moon-64x64.png" id="6_fjrip"]
 
 [sub_resource type="GDScript" id="GDScript_85g3d"]
 resource_name = "rigid_player"
@@ -40,7 +42,7 @@ var held_distance = 10.0
 enum PLAYERSTATE {
 	Controlled,
 	CampFire,
-	CoffeeMachine,
+	CoffeeMaker,
 	Sitting
 }
 var current_state = PLAYERSTATE.Controlled
@@ -48,50 +50,66 @@ var current_state = PLAYERSTATE.Controlled
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	$stick_in.hide()
+	GLOBAL.camera = $Camera
+	GLOBAL.player = self
+	GLOBAL.dbg = $\"../dbg\"
+	GLOBAL.hints = HINTS
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(\"ui_cancel\"):
 		_mouse_input = !_mouse_input
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if _mouse_input else Input.MOUSE_MODE_CAPTURED
+
 	if current_state == PLAYERSTATE.CampFire:
 		stick_unhandled_input(event)
-	if current_state != PLAYERSTATE.Controlled: return
-	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+
+	if current_state not in [
+		PLAYERSTATE.Controlled,
+		PLAYERSTATE.Sitting
+	]:
+		return
+
+	if event is InputEventMouseMotion \\
+	and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		_rotation_input -= event.relative.x * MOUSE_SENSITIVITY
 		_tilt_input -= event.relative.y * MOUSE_SENSITIVITY
 
 func _process(_dt: float) -> void:
-	if current_state == PLAYERSTATE.Controlled:
-		control_tick(_dt)
-	if current_state == PLAYERSTATE.CampFire:
-		campfire_tick(_dt)
-		if Input.is_action_just_pressed(\"back\"):
-			if !zefir_throwable():
-				current_state = PLAYERSTATE.Controlled
-				campfire_cleanup()
-			else:
-				zefir_on_stick = false
-				#var z = zefirkla_shape.duplicate()
-				#z.global_transform = zefirkla_shape.global_transform
-				#var shape
-				#var rb = RigidBody3D.new()
-				#rb.add_child(shape)
-				#get_tree().root.add_child(rb)
-				#rb.global_transform = zefirkla_shape.global_transform
-				zefirkla.hide()
-	if current_state == PLAYERSTATE.CoffeeMachine:
-		pass
-
-
-
-
-
+	tick_held(_dt)
+	match current_state:
+		PLAYERSTATE.Controlled:
+			control_tick(_dt)
+		PLAYERSTATE.Sitting:
+			sit_tick(_dt)
+		PLAYERSTATE.CampFire:
+			campfire_tick(_dt)
+			if Input.is_action_just_pressed(\"back\"):
+				if !zefir_throwable():
+					current_state = PLAYERSTATE.Controlled
+					campfire_cleanup()
+				else:
+					zefir_on_stick = false
+					#var z = zefirkla_shape.duplicate()
+					#z.global_transform = zefirkla_shape.global_transform
+					#var shape
+					#var rb = RigidBody3D.new()
+					#rb.add_child(shape)
+					#get_tree().root.add_child(rb)
+					#rb.global_transform = zefirkla_shape.global_transform
+					zefirkla.hide()
+		PLAYERSTATE.CoffeeMaker:
+			coffeemaker_tick(_dt)
 
 func _physics_process(delta: float) -> void:
 	if current_state == PLAYERSTATE.CampFire: campfire_physics_tick(delta)
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	integrate_control(state)
+
+
+
+
+### ----- FREE -----
 
 func integrate_control(state: PhysicsDirectBodyState3D):
 	_mouse_rotation.x = clamp(_mouse_rotation.x + _tilt_input, TILT_LOWER_LIMIT, TILT_UPPER_LIMIT)
@@ -122,6 +140,7 @@ func integrate_control(state: PhysicsDirectBodyState3D):
 	var new_velocity := current_velocity.move_toward(target_velocity, LOSS_SPEED * state.get_step())
 	new_velocity.y = current_velocity.y
 	state.set_linear_velocity(new_velocity)
+	
 	apply_central_impulse(Vector3.DOWN * GRAVITY_SCALE * mass * state.get_step())
 	if picked_item:
 		if picked_joint:
@@ -134,9 +153,19 @@ func integrate_control(state: PhysicsDirectBodyState3D):
 	$Camera/CanvasLayer/AspectRatioContainer/SubViewportContainer/SubViewport.size = get_window().size
 
 
-### ----- FREE -----
-
 func control_tick(_dt: float):
+	var on_ground = $RayCast3D.get_collider() != null
+	if Input.is_action_pressed(\"space\") && on_ground:
+		$Cat_Winter.position.y = lerpf($Cat_Winter.position.y, 0.0, _dt * 10.0)
+		$Camera.position.y = lerpf($Camera.position.y , 0.425, _dt * 10.0)
+		$Held.position.y = lerpf($Held.position.y, -0.2, _dt * 10.0);
+	else:
+		$Cat_Winter.position.y = lerpf($Cat_Winter.position.y, 0.545, _dt * 10.0)
+		$Camera.position.y = lerpf($Camera.position.y, 0.925, _dt * 10.0)
+		$Held.position.y = lerpf($Held.position.y, 0.33, _dt * 10.0);
+	if Input.is_action_just_released(\"space\") && on_ground:
+		apply_central_impulse(Vector3.UP * 8.0)
+	
 	if Input.is_action_just_released(\"lmb\") and picked_item:
 		picked_item.sleeping = false
 		if !picked_joint:
@@ -192,62 +221,231 @@ func control_tick(_dt: float):
 	
 	if body and body.is_in_group(\"interactable\") and !picked_item:
 		if body.is_in_group(\"campfire\"):
-			HINTS.center_hint(\"e\", \"E\", \"Жарить маршмелов\")
+			HINTS.center_hint(\"ecook\", \"E\", \"Жарить маршмелов\")
 			if Input.is_action_just_pressed(\"interact\"):
 				current_state = PLAYERSTATE.CampFire
 				campfire_setup(body.global_position)
-		if body.is_in_group(\"coffeemachine\"):
-			HINTS.center_hint(\"e\", \"E\", \"Готовить кофе\")
+		else:
+			HINTS.rm_hint(\"ecook\")
+			
+		if body.is_in_group(\"coffeemaker\"):
+			HINTS.center_hint(\"ecoffee\", \"E\", \"Готовить кофе\")
 			if Input.is_action_just_pressed(\"interact\"):
-				current_state = PLAYERSTATE.CoffeeMachine
-				coffeemachine_setup(body.global_position)
+				coffeemaker_setup(body)
+		else:
+			HINTS.rm_hint(\"ecoffee\")
 		if body.is_in_group(\"log\"):
-			HINTS.center_hint(\"e\", \"E\", \"Сесть\")
+			HINTS.center_hint(\"esit\", \"E\", \"Сесть\")
 			if Input.is_action_just_pressed(\"interact\"):
 				current_state = PLAYERSTATE.Sitting
-				sit_setup(body.global_position)
+				sit_setup(body)
+		else:
+			HINTS.rm_hint(\"esit\")
 	else:
-		HINTS.rm_hint(\"e\")
+		HINTS.rm_hint(\"esit\")
+		HINTS.rm_hint(\"ecoffee\")
+		HINTS.rm_hint(\"ecook\")
+	
+
+
+
+
+
 
 ### ----- SITTING -----
 
-func sit_setup(body):
-	# interpolate to body position like in campfire
-	# let player look around, but only to side they are looking at start relative to log body (y / neg y)
-	pass
+var sit_target_pos: Vector3
+var sit_target_yaw: float
+var sit_speed := 5.0
+var sit_rot_speed := 6.0
+
+var sit_log_basis: Basis
+var sit_local_yaw := 0.0
+
+const SIT_YAW_LIMIT := deg_to_rad(60.0)
+const SIT_SOFTNESS := 8.0 # скорость возврата
+var sit_base_yaw := 0.0
+
+
+@onready var default_collision_mask = collision_mask
+
+func sit_setup(sitable: Node3D):
+	freeze = true
+	collision_mask = 0
+	current_state = PLAYERSTATE.Sitting
+	HINTS.rm_hint(\"esit\")
+	HINTS.hint(\"q\", \"Q\", \"Встать\")
+	ANIMATION.set(\"parameters/sit/blend_amount\", 1.0)
+
+	sit_target_pos = sitable.global_position + -sitable.transform.basis.z * Vector3(1.0, 1.0, 1.0)
+	
+
+	sit_log_basis = sitable.global_transform.basis
+
+	var player_forward := -global_transform.basis.z
+	player_forward.y = 0.0
+	player_forward = player_forward.normalized()
+
+	var local_forward := sit_log_basis.inverse() * player_forward
+
+	sit_local_yaw = atan2(local_forward.x, local_forward.z)
+
+	_rotation_input = 0.0
+	_tilt_input = 0.0
+	if held_item: held_item.on_state_enter(PLAYERSTATE.Sitting)
+
+func sit_tick(dt: float):
+	# посадка
+	global_position = global_position.lerp(
+		sit_target_pos,
+		dt * sit_speed
+	)
+
+	# свободное вращение
+	_mouse_rotation.y += _rotation_input
+	_mouse_rotation.x = clamp(
+		_mouse_rotation.x + _tilt_input,
+		TILT_LOWER_LIMIT,
+		TILT_UPPER_LIMIT
+	)
+
+	# считаем текущий forward
+	var forward := -Basis(Vector3.UP, _mouse_rotation.y).z
+	forward.y = 0.0
+	forward = forward.normalized()
+
+	# в локальное пространство бревна
+	var local_forward := sit_log_basis.inverse() * forward
+	var local_yaw := atan2(local_forward.x, local_forward.z)
+	
+	var err = local_yaw - sit_local_yaw
+	#print(local_yaw)
+#
+	## мягкое ограничение
+	#var delta := wrapf(local_yaw - sit_local_yaw, -PI, PI)
+#
+	#if abs(delta) > SIT_YAW_LIMIT:
+		#var excess = delta - sign(delta) * SIT_YAW_LIMIT
+		## excess — насколько мы ВЫШЛИ за окно
+#
+		## перевод excess из локального пространства бревна в мировой yaw
+		#var correction_strength := dt * SIT_SOFTNESS
+		#_mouse_rotation.y -= excess * correction_strength
+#
+	rotation.y = _mouse_rotation.y
+	CAMERA_CONTROLLER.rotation.x = _mouse_rotation.x
+#
+	_rotation_input = 0.0
+	_tilt_input = 0.0
+
+	if Input.is_action_just_pressed(\"back\"):
+		sit_cleanup()
+
+func sit_cleanup():
+	HINTS.rm_hint(\"q\")
+	current_state = PLAYERSTATE.Controlled
+	freeze = false
+	collision_mask = default_collision_mask
+	ANIMATION.set(\"parameters/sit/blend_amount\", 0.0)
+	if held_item: held_item.on_state_exit(PLAYERSTATE.Sitting)
+
 
 ### ----- ITEM -----
-
 
 var held_item : RigidBody3D = null
 func pick_item(body: RigidBody3D):
 	body.freeze = true
+	var s = body.get_node(\"CollisionShape3D\")
+	if s:
+		s.disabled = true
 	for hint in body.hints():
 		HINTS.hint_raw(hint)
 	body.reparent($Held, false)
 	body.transform = Transform3D.IDENTITY
+	body.on_pickup()
 	held_item = body
 
 func throw_item():
 	held_item.freeze = false
+	var s = held_item.get_node(\"CollisionShape3D\")
+	if s:
+		s.disabled = false
+		
 	for hint in held_item.hints():
 		var key = hint[0]
 		HINTS.rm_hint(key)
 	held_item.reparent(get_tree().root, true)
+	for hint in held_item.ray_hints():
+		HINTS.rm_hint(hint[0])
+	held_item.cleanup()
 	held_item = null
 
 func use_item():
-	pass
+	held_item.use(PICKUP_RAYCAST.get_collision_point(), PICKUP_RAYCAST.global_basis.z, PICKUP_RAYCAST.get_collider())
 
+func tick_held(_dt):
+	if !held_item: return
+	held_item.tick_ray(PICKUP_RAYCAST.get_collision_point(), PICKUP_RAYCAST.global_basis.z, PICKUP_RAYCAST.get_collider())
+	if Input.is_action_just_pressed(\"use_held\"):
+		use_item()
+	if PICKUP_RAYCAST.get_collider():
+		for hint in held_item.ray_hints():
+			HINTS.center_hint_raw(hint)
+	else:
+		for hint in held_item.ray_hints():
+			HINTS.rm_hint(hint[0])
 
 
 
 
 ### ----- COFFEE -----
 
+var strelka_max = 21
+var zone_max = 16
+var zone_size = 5.3
+var strelka_dir = 1
+var strelka_speed = 0.4
+var zone_pos 
+var coffeemaker
 
-func coffeemachine_setup(body):
-	pass
+func coffeemaker_setup(_body: Node3D):
+	$\"../CoffeeMinigame/Control\".show()
+	current_state = PLAYERSTATE.CoffeeMaker
+	HINTS.hint(\"q\", \"Q\", \"Уйти\")
+	HINTS.rm_hint(\"ecoffee\")
+	HINTS.center_top_hint(\"e\", \"E\", \"Завершить\")
+	$\"../CoffeeMinigame/Control/Strelka\".rotation = -strelka_max * 2.0 * PI / 360
+	zone_pos =  randf_range(-zone_max, zone_max)
+	$\"../CoffeeMinigame/Control/Zone\".rotation = zone_pos * 2.0 * PI / 360
+	coffeemaker = _body
+	if held_item: held_item.on_state_enter(PLAYERSTATE.CoffeeMaker)
+
+func coffeemaker_tick(_dt):
+	$\"../CoffeeMinigame/Control/Strelka\".rotation += _dt * strelka_speed * strelka_dir
+	var strelka_pos = $\"../CoffeeMinigame/Control/Strelka\".rotation / 2.0 / PI * 360
+	if Input.is_action_just_pressed(\"interact\"):
+		if strelka_pos > zone_pos - zone_size and strelka_pos < zone_pos + zone_size:
+			# todo: spawn
+			coffeemaker.spawn()
+			coffeemaker_cleanup()
+			return
+		else:
+			# todo: broke
+			coffeemaker_cleanup()
+			return
+		if $\"../CoffeeMinigame/Control/Strelka\".rotation > strelka_max * 2.0 * PI / 360:
+			strelka_dir = -1
+		if $\"../CoffeeMinigame/Control/Strelka\".rotation < -strelka_max * 2.0 * PI / 360:
+			strelka_dir = 1
+	if Input.is_action_just_pressed(\"back\"):
+		coffeemaker_cleanup()
+
+func coffeemaker_cleanup():
+	$\"../CoffeeMinigame/Control\".hide()
+	current_state = PLAYERSTATE.Controlled
+	HINTS.rm_hint(\"q\")
+	HINTS.rm_hint(\"e\")
+	if held_item: held_item.on_state_exit(PLAYERSTATE.CoffeeMaker)
 
 
 
@@ -259,18 +457,18 @@ var campfire_rot_speed = 4.5
 var campfire_target = Vector3.ZERO
 var campfire_rot_target = Vector3.ZERO
 
-
 func campfire_setup(target):
 	zefir_progress = 1.0
 	HINTS.hint(\"q\", \"Q\", \"Уйти\")
 	HINTS.hint(\"shift\", \"Shift\", \"Вытянуть\")
-	HINTS.rm_hint(\"e\")
+	HINTS.rm_hint(\"ecook\")
 	campfire_target = target + ((global_position - target) * Vector3(1.0, 0.0, 1.0)).normalized() * 3.0
 	campfire_rot_target = target
 	$stick_initial.play(\"in\")
 	$zefirka.play(\"RESET\")
 	$stick.play(\"pull\")
 	zefir_on_stick = true
+	if held_item: held_item.on_state_enter(PLAYERSTATE.CampFire)
 
 var zefir_progress = 1.0
 var zefir_on_stick = true
@@ -407,6 +605,7 @@ func campfire_cleanup():
 	HINTS.rm_hint(\"swap\")
 	HINTS.rm_hint(\"throw\")
 	HINTS.rm_hint(\"eat\")
+	if held_item: held_item.on_state_exit(PLAYERSTATE.CampFire)
 "
 
 [sub_resource type="QuadMesh" id="QuadMesh_qlg0r"]
@@ -887,6 +1086,9 @@ animation = &"arm_l_walk"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_smehm"]
 animation = &"arm_r_walk"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ur7pv"]
+animation = &"leg_sit"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qhqgy"]
 animation = &"leg_rest"
 
@@ -900,17 +1102,18 @@ animation = &"leg_rest"
 
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_dqkch"]
 
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_y4r1p"]
+
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_g2els"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_g2els"]
-graph_offset = Vector2(-854.8085, 158.9505)
 nodes/output/position = Vector2(1240, 380)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_g2els")
-"nodes/Animation 2/position" = Vector2(-100, 280)
+"nodes/Animation 2/position" = Vector2(-260, 180)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_qhqgy")
-nodes/Animation/position = Vector2(-100, 40)
+nodes/Animation/position = Vector2(-260, -20)
 nodes/walk/node = SubResource("AnimationNodeBlend2_g2els")
-nodes/walk/position = Vector2(260, 140)
+nodes/walk/position = Vector2(40, 0)
 nodes/arm+leg/node = SubResource("AnimationNodeAdd2_g2els")
 nodes/arm+leg/position = Vector2(840, 340)
 "nodes/Animation 3/node" = SubResource("AnimationNodeAnimation_dqkch")
@@ -931,7 +1134,11 @@ nodes/l_walk/position = Vector2(-660, 780)
 "nodes/Animation 4/position" = Vector2(-900, 380)
 "nodes/Animation 7/node" = SubResource("AnimationNodeAnimation_smehm")
 "nodes/Animation 7/position" = Vector2(-920, 540)
-node_connections = [&"output", 0, &"arm+leg", &"walk", 0, &"Animation", &"walk", 1, &"Animation 2", &"arm+leg", 0, &"walk", &"arm+leg", 1, &"arm l+r", &"l_pick", 0, &"l_walk", &"l_pick", 1, &"Animation 3", &"r_walk", 0, &"Animation 4", &"r_walk", 1, &"Animation 7", &"arm l+r", 0, &"r_walk", &"arm l+r", 1, &"l_pick", &"l_walk", 0, &"Animation 5", &"l_walk", 1, &"Animation 6"]
+nodes/sit/node = SubResource("AnimationNodeBlend2_y4r1p")
+nodes/sit/position = Vector2(380, 160)
+"nodes/Animation 8/node" = SubResource("AnimationNodeAnimation_ur7pv")
+"nodes/Animation 8/position" = Vector2(120, 240)
+node_connections = [&"output", 0, &"arm+leg", &"walk", 0, &"Animation", &"walk", 1, &"Animation 2", &"arm+leg", 0, &"sit", &"arm+leg", 1, &"arm l+r", &"l_pick", 0, &"l_walk", &"l_pick", 1, &"Animation 3", &"r_walk", 0, &"Animation 4", &"r_walk", 1, &"Animation 7", &"arm l+r", 0, &"r_walk", &"arm l+r", 1, &"l_pick", &"l_walk", 0, &"Animation 5", &"l_walk", 1, &"Animation 6", &"sit", 0, &"walk", &"sit", 1, &"Animation 8"]
 
 [sub_resource type="Animation" id="Animation_ae60x"]
 length = 0.001
@@ -1330,6 +1537,59 @@ tracks/3/keys = {
 "values": [Vector3(-0.11273935, 1.5711883, -3.1249723)]
 }
 
+[sub_resource type="Animation" id="Animation_fulsm"]
+resource_name = "leg_sit"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Cat_Winter/Armature/Skeleton3D/Нога_l:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.15845087, 0.05840665, 1.4236801e-09), Vector3(0.118, 0.058, 0), Vector3(0.15845087, 0.05840665, 1.4236801e-09)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Cat_Winter/Armature/Skeleton3D/Нога_l:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.23561946, 1.7453293, -4.4331365), Vector3(-0.1134464, 1.7453293, -4.4331365), Vector3(0.23561946, 1.7453293, -4.4331365)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Cat_Winter/Armature/Skeleton3D/Нога_r:position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.15845087, 0.05840665, 1.4236801e-09), Vector3(-0.138, 0.058, 0), Vector3(-0.15845087, 0.05840665, 1.4236801e-09)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Cat_Winter/Armature/Skeleton3D/Нога_r:rotation")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.23561946, -1.7453293, 4.4331365), Vector3(-0.1134464, -1.7453293, 4.4331365), Vector3(0.23561946, -1.7453293, 4.4331365)]
+}
+
 [sub_resource type="Animation" id="Animation_7p1hh"]
 resource_name = "leg_walk"
 length = 0.4
@@ -1394,6 +1654,7 @@ _data = {
 &"arms_walk": SubResource("Animation_g2els"),
 &"l_arm_forward": SubResource("Animation_dqkch"),
 &"leg_rest": SubResource("Animation_qhqgy"),
+&"leg_sit": SubResource("Animation_fulsm"),
 &"leg_walk": SubResource("Animation_7p1hh")
 }
 
@@ -1716,6 +1977,61 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_dqkch")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_smehm"]
+seed = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3g7ry"]
+noise = SubResource("FastNoiseLite_smehm")
+seamless = true
+invert = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ur7pv"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_746c1"]
+noise = SubResource("FastNoiseLite_ur7pv")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_y4r1p"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ywqbu"]
+noise = SubResource("FastNoiseLite_y4r1p")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d2wvv"]
+shader = ExtResource("5_tuyoq")
+shader_parameter/cloud_shape_sampler = SubResource("NoiseTexture2D_746c1")
+shader_parameter/cloud_curves = SubResource("NoiseTexture2D_3g7ry")
+shader_parameter/clouds_samples = 16
+shader_parameter/shadow_sample = 2
+shader_parameter/clouds_density = 0.40000000596048
+shader_parameter/clouds_scale = 0.80000000447036
+shader_parameter/clouds_smoothness = 0.07999999821184
+shader_parameter/clouds_light_color = Color(0.21600342, 0.27101564, 0.3450784, 1)
+shader_parameter/clouds_shadow_intensity = 10.0
+shader_parameter/high_clouds_sampler = SubResource("NoiseTexture2D_ywqbu")
+shader_parameter/high_clouds_density = 0.80000001192096
+shader_parameter/top_color = Color(0.07830001, 0.14220004, 0.27, 1)
+shader_parameter/bottom_color = Color(0.08799448, 0.10706589, 0.17744392, 1)
+shader_parameter/sun_scatter = Color(0, 0, 0, 1)
+shader_parameter/astro_tint = Color(0.41215247, 0.41215247, 0.41215247, 1)
+shader_parameter/astro_sampler = ExtResource("6_fjrip")
+shader_parameter/astro_scale = 7.40000011026888
+shader_parameter/astro_intensity = 2.80000002682216
+shader_parameter/stars_intensity = 4.60000006854552
+shader_parameter/shooting_stars_intensity = 10.0
+shader_parameter/shooting_star_tint = Color(0, 0, 0, 1)
+
+[sub_resource type="Sky" id="Sky_dcmoc"]
+sky_material = SubResource("ShaderMaterial_d2wvv")
+
+[sub_resource type="Environment" id="Environment_3v2ag"]
+background_mode = 2
+sky = SubResource("Sky_dcmoc")
+tonemap_mode = 2
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0
+
 [node name="Player" type="RigidBody3D" unique_id=2016181414 node_paths=PackedStringArray("CAMERA_CONTROLLER", "PICKUP_RAYCAST", "ANIMATION")]
 collision_layer = 3
 collision_mask = 3
@@ -1836,6 +2152,7 @@ parameters/l_pick/blend_amount = 0.0
 parameters/r_walk/blend_amount = 1.0
 "parameters/arm l+r/add_amount" = 1.0
 parameters/l_walk/blend_amount = 1.0
+parameters/sit/blend_amount = 0.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1150680261]
 libraries/ = SubResource("AnimationLibrary_ae60x")
@@ -1961,7 +2278,6 @@ skeleton = NodePath("")
 
 [node name="Хвост_2" type="BoneAttachment3D" parent="Cat_Winter/Armature/Skeleton3D" unique_id=849164687]
 transform = Transform3D(1, 1.2873148e-16, 4.1124677e-17, 4.112469e-17, -0.57975477, 0.8147911, 1.287315e-16, -0.814791, -0.5797548, -3.4450183e-17, 0.1751498, -0.12990318)
-visible = false
 bone_name = "Хвост_2"
 bone_idx = 6
 
@@ -1983,3 +2299,9 @@ skeleton = NodePath("")
 
 [node name="Held" type="Node3D" parent="." unique_id=1578947882]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33574998, 0.32985833, -0.8580091)
+
+[node name="RayCast3D" type="RayCast3D" parent="." unique_id=1264806766]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.10336912, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=585288892]
+environment = SubResource("Environment_3v2ag")
