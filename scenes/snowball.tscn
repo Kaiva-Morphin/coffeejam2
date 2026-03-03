@@ -13,8 +13,14 @@ extends Heldable
 var current_size = 0.1
 var ground_ray: RayCast3D
 
+var preview
+@export var preview_material : StandardMaterial3D
 
 func _ready():
+	if preview_material == null:
+		preview_material = StandardMaterial3D.new()
+		preview_material.albedo_color = Color(0.2, 1, 0.4, 0.4)
+		preview_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	ground_ray = RayCast3D.new()
 	ground_ray.collide_with_areas = false
 	ground_ray.collide_with_bodies = true
@@ -22,6 +28,11 @@ func _ready():
 	ground_ray.enabled = true
 	$CollisionShape3D.shape = $CollisionShape3D.shape.duplicate(true)
 	$MeshInstance3D.mesh = $MeshInstance3D.mesh.duplicate(true)
+	
+	preview = $MeshInstance3D.duplicate()
+	get_tree().root.add_child.call_deferred(preview)
+	preview.hide()
+	preview.material_override = preview_material
 
 
 func _physics_process(delta):
@@ -42,8 +53,8 @@ func _physics_process(delta):
 		var grow = growth_rate * speed * delta
 		current_size += grow
 		current_size = clamp(current_size, 0.0, max_scale)
-		$MeshInstance3D.mesh.radius = current_size
-		$MeshInstance3D.mesh.height = current_size * 2
+		$MeshInstance3D.mesh.radius = (current_size * 1.2)
+		$MeshInstance3D.mesh.height = (current_size * 1.2) * 2
 		$CollisionShape3D.shape.radius = current_size
 		#current_size += grow
 		#scale += Vector3.ONE * current_size
@@ -55,10 +66,64 @@ func _update_ground_ray():
 	#ground_ray.global_transform.origin = global_transform.origin
 	ground_ray.global_rotation = Vector3(0., 0., 0)
 	ground_ray.target_position = Vector3.DOWN * ray_length
+	
+
+func tick_ray(point: Vector3, _dir, body, _normal):
+	#GLOBAL.dbg.global_position = point
+	if body:
+		preview.global_position = _normal * current_size + point
+		preview.show()
+		#get_tree().create_timer(0.001).timeout.connect(func (): preview.show())
+		#current_size
+	else:
+		preview.hide()
+
+
+func cleanup():
+	preview.hide()
+	GLOBAL.hints.rm_hint(\"snowball\")
+
+
+func ray_hints():
+	if self.disabled:
+		GLOBAL.hints.rm_hint(\"snowball\")
+		return []
+	return [
+		[\"snowball\", \"F\", \"Прикрепить\"],
+	]
+
+
+func use(_point: Vector3, _dir, _body, _normal):
+	if self.disabled: return
+	var body = StaticBody3D.new()
+	get_tree().root.add_child(body)
+	body.global_position = _normal * current_size + _point
+	var c = $CollisionShape3D.duplicate()
+	c.disabled = false
+	body.add_child(c)
+	body.add_child($MeshInstance3D.duplicate())
+	cleanup()
+	preview.queue_free()
+	self.queue_free()
+	ground_ray.queue_free()
+	get_tree().create_timer(0.001).timeout.connect(func (): GLOBAL.hints.rm_hint(\"snowball\"))
+
+
+func on_state_enter(_state):
+	self.disabled = true
+	cleanup()
+
+
+func on_state_exit(_state):
+	self.disabled = false
 "
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6tw0o"]
 radius = 0.10345742
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3yv71"]
+distance_fade_mode = 2
+distance_fade_max_distance = 1.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_xsgkx"]
 radius = 0.1
@@ -73,4 +138,5 @@ script = SubResource("GDScript_3yv71")
 shape = SubResource("SphereShape3D_6tw0o")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1414217893]
+material_override = SubResource("StandardMaterial3D_3yv71")
 mesh = SubResource("SphereMesh_xsgkx")

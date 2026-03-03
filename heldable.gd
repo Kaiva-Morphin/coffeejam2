@@ -21,10 +21,10 @@ func on_state_exit(state):
 func ray_hints():
 	return []
 
-func use(_point, _dir, _body):
+func use(_point, _dir, _body, _normal):
 	pass
 
-func tick_ray(_point, _dir, _body):
+func tick_ray(_point, _dir, _body, _normal):
 	pass
 
 func cleanup():

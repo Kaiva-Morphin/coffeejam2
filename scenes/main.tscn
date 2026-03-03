@@ -16,6 +16,9 @@
 [ext_resource type="PackedScene" uid="uid://bja5by5x4085c" path="res://scenes/lightblob.tscn" id="11_jkv2x"]
 [ext_resource type="PackedScene" uid="uid://dels5ka77oqeu" path="res://scenes/coffe_maker.tscn" id="11_trceg"]
 [ext_resource type="PackedScene" uid="uid://dalasf058f3hw" path="res://scenes/lights.tscn" id="14_a8y0u"]
+[ext_resource type="PackedScene" uid="uid://b7d8nk32v6qft" path="res://scenes/carrot.tscn" id="16_jbj1t"]
+[ext_resource type="PackedScene" uid="uid://cpkudawrbn2wa" path="res://scenes/rocks.tscn" id="18_dp3eg"]
+[ext_resource type="PackedScene" uid="uid://dmi28d3ag0blh" path="res://scenes/stick.tscn" id="19_0ld40"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_jyhfs"]
 seed = 3
@@ -68,6 +71,10 @@ sky_material = SubResource("ShaderMaterial_o6xl0")
 background_mode = 2
 sky = SubResource("Sky_pm3ni")
 tonemap_mode = 2
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
 glow_enabled = true
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0
@@ -472,6 +479,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -3.0020
 [node name="Snowball3" parent="." unique_id=328614528 instance=ExtResource("7_jbj1t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -2.1020143)
 
+[node name="Snowball5" parent="." unique_id=530727725 instance=ExtResource("7_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -1.6701003)
+
+[node name="Snowball6" parent="." unique_id=1038564329 instance=ExtResource("7_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -1.2662561)
+
+[node name="Snowball7" parent="." unique_id=745957579 instance=ExtResource("7_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -0.87948984)
+
+[node name="Snowball8" parent="." unique_id=1926412677 instance=ExtResource("7_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, -0.43436837)
+
+[node name="Snowball9" parent="." unique_id=170597039 instance=ExtResource("7_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8218505, 25.002861, 0.35811073)
+
 [node name="Hints" type="CanvasLayer" parent="." unique_id=542013963]
 script = SubResource("GDScript_o6xl0")
 
@@ -730,3 +752,12 @@ mesh = SubResource("CylinderMesh_choun")
 
 [node name="Lights" parent="." unique_id=662336235 instance=ExtResource("14_a8y0u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.361753, -7.822136)
+
+[node name="Snowball4" parent="." unique_id=1302432946 instance=ExtResource("16_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6425734, 24.047926, -0.65949726)
+
+[node name="Carrot" parent="." unique_id=194354884 instance=ExtResource("18_dp3eg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7916412, 23.861753, -2.4128015)
+
+[node name="Stick" parent="." unique_id=208675211 instance=ExtResource("19_0ld40")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2378416, 23.878489, -3.7004251)

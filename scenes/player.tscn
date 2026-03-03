@@ -38,6 +38,14 @@ var held_distance = 10.0
 @export var ANIMATION: AnimationTree
 
 
+func get_ray_collider():
+	return PICKUP_RAYCAST.get_collider()
+
+func get_ray_point():
+	return PICKUP_RAYCAST.get_collision_point()
+
+func get_ray_normal():
+	return PICKUP_RAYCAST.get_collision_normal()
 
 enum PLAYERSTATE {
 	Controlled,
@@ -381,11 +389,11 @@ func throw_item():
 	held_item = null
 
 func use_item():
-	held_item.use(PICKUP_RAYCAST.get_collision_point(), PICKUP_RAYCAST.global_basis.z, PICKUP_RAYCAST.get_collider())
+	held_item.use(get_ray_point(), PICKUP_RAYCAST.global_basis.z, get_ray_collider(), get_ray_normal())
 
 func tick_held(_dt):
 	if !held_item: return
-	held_item.tick_ray(PICKUP_RAYCAST.get_collision_point(), PICKUP_RAYCAST.global_basis.z, PICKUP_RAYCAST.get_collider())
+	held_item.tick_ray(get_ray_point(), PICKUP_RAYCAST.global_basis.z, get_ray_collider(), get_ray_normal())
 	if Input.is_action_just_pressed(\"use_held\"):
 		use_item()
 	if PICKUP_RAYCAST.get_collider():
@@ -2130,7 +2138,6 @@ material = SubResource("FogMaterial_jyhfs")
 
 [node name="Snow" type="GPUParticles3D" parent="." unique_id=79501114]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.955769, 0)
-visible = false
 amount = 40000
 lifetime = 5.0
 preprocess = 60.0
