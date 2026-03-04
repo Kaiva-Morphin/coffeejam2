@@ -1,20 +1,8 @@
 [gd_scene format=3 uid="uid://c83tqxxpfsbkr"]
 
+[ext_resource type="Script" uid="uid://po1cbtafsx04" path="res://scenes/coffeejam2cup.gd" id="1_5srpu"]
 [ext_resource type="Texture2D" uid="uid://05mqjsy04vxq" path="res://assets/models/cup2/CupTexture.png" id="1_cli8x"]
 [ext_resource type="ArrayMesh" uid="uid://1cj3oxak6qrr" path="res://assets/models/cup2/CoffeeJam2Cup.obj" id="2_5srpu"]
-
-[sub_resource type="GDScript" id="GDScript_cli8x"]
-resource_name = "coffeejam2cup"
-script/source = "extends Heldable
-
-
-
-
-func hints():
-	return [
-		[\"use_coffee\", \"F\", \"Пить\"],
-	]
-"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cli8x"]
 albedo_texture = ExtResource("1_cli8x")
@@ -27,7 +15,7 @@ points = PackedVector3Array(-0.200553, 0.18284148, 0.028812915, -0.15316314, 0.1
 can_sleep = false
 linear_damp = 0.1
 angular_damp = 0.1
-script = SubResource("GDScript_cli8x")
+script = ExtResource("1_5srpu")
 
 [node name="CoffeeJam2Cup" type="MeshInstance3D" parent="." unique_id=392589588]
 material_override = SubResource("StandardMaterial3D_cli8x")

@@ -1,10 +1,8 @@
 [gd_scene format=4 uid="uid://bkqf1gxxyguo0"]
 
 [ext_resource type="Texture2D" uid="uid://jvjcmq35ipd6" path="res://assets/snowflake.png" id="1_3vyb7"]
-[ext_resource type="Shader" uid="uid://df1rd0imf8it8" path="res://scenes/fog.gdshader" id="1_dqkch"]
+[ext_resource type="Shader" uid="uid://dqq5rgn3cmidw" path="res://scenes/blink.gdshader" id="1_qlg0r"]
 [ext_resource type="Texture2D" uid="uid://c74mo4drhst43" path="res://assets/models/cat/cat.png" id="2_g2els"]
-[ext_resource type="Texture2D" uid="uid://05mqjsy04vxq" path="res://assets/models/cup2/CupTexture.png" id="3_qhqgy"]
-[ext_resource type="ArrayMesh" uid="uid://1cj3oxak6qrr" path="res://assets/models/cup2/CoffeeJam2Cup.obj" id="5_fjrip"]
 [ext_resource type="Shader" uid="uid://cr0sb2xdyyg51" path="res://sky.gdshader" id="5_tuyoq"]
 [ext_resource type="Texture2D" uid="uid://da6yp7b5yrlxj" path="res://Moon-64x64.png" id="6_fjrip"]
 
@@ -17,7 +15,7 @@ script/source = "extends RigidBody3D
 @export var GRAVITY_SCALE: float = 20.0
 @export var MOUSE_SENSITIVITY: float = 0.002
 
-@export var TILT_LOWER_LIMIT := deg_to_rad(-70.0)
+@export var TILT_LOWER_LIMIT := deg_to_rad(-75.0)
 @export var TILT_UPPER_LIMIT := deg_to_rad(80.0)
 
 @export var CAMERA_CONTROLLER: Camera3D
@@ -98,7 +96,6 @@ func _ready() -> void:
 	$stick_in.hide()
 	GLOBAL.camera = $Camera
 	GLOBAL.player = self
-	GLOBAL.dbg = $\"../dbg\"
 	GLOBAL.hints = HINTS
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -219,12 +216,12 @@ func control_tick(_dt: float):
 	if Input.is_action_pressed(\"space\") && on_ground:
 		$Cat_Winter.position.y = lerpf($Cat_Winter.position.y, 0.0, _dt * 10.0)
 		$Camera.position.y = lerpf($Camera.position.y , 0.425, _dt * 10.0)
-		$Held.position.y = lerpf($Held.position.y, -0.2, _dt * 10.0);
+		$Held/Held2.position.y = lerpf($Held/Held2.position.y, -0.55, _dt * 10.0);
 		ANIMATION.set(\"parameters/body_crawl/blend_amount\", 1.0)
 	else:
 		$Cat_Winter.position.y = lerpf($Cat_Winter.position.y, 0.545, _dt * 10.0)
 		$Camera.position.y = lerpf($Camera.position.y, 0.925, _dt * 10.0)
-		$Held.position.y = lerpf($Held.position.y, 0.33, _dt * 10.0);
+		$Held/Held2.position.y = lerpf($Held/Held2.position.y, 0.0, _dt * 10.0);
 		ANIMATION.set(\"parameters/body_crawl/blend_amount\", 0.0)
 	if Input.is_action_just_released(\"space\") && on_ground:
 		apply_central_impulse(Vector3.UP * 8.0)
@@ -390,7 +387,7 @@ func sit_tick(dt: float):
 
 	# в локальное пространство бревна
 	var local_forward := sit_log_basis.inverse() * forward
-	var local_yaw := atan2(local_forward.x, local_forward.z)
+	var _local_yaw := atan2(local_forward.x, local_forward.z)
 	
 	#var err = local_yaw - sit_local_yaw
 	#print(local_yaw)
@@ -434,7 +431,7 @@ func pick_item(body: RigidBody3D):
 		s.disabled = true
 	for hint in body.hints():
 		HINTS.hint_raw(hint)
-	body.reparent($Held, false)
+	body.reparent($Held/Held2, false)
 	body.transform = Transform3D.IDENTITY
 	body.on_pickup()
 	held_item = body
@@ -684,24 +681,15 @@ func campfire_cleanup():
 [sub_resource type="SphereShape3D" id="SphereShape3D_tuyoq"]
 radius = 0.1
 
-[sub_resource type="QuadMesh" id="QuadMesh_qlg0r"]
-flip_faces = true
-size = Vector2(2, 2)
-
-[sub_resource type="Gradient" id="Gradient_tuyoq"]
-colors = PackedColorArray(0, 1, 0.8499999, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_fjrip"]
-gradient = SubResource("Gradient_tuyoq")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_smehm"]
-render_priority = 0
-shader = ExtResource("1_dqkch")
-shader_parameter/gradient = SubResource("GradientTexture1D_fjrip")
-shader_parameter/fog_strength = 0.14000000665
-shader_parameter/fog_amount = 0.15
-shader_parameter/fog_near = 1.0
-shader_parameter/fog_far = 2000.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tuyoq"]
+shader = ExtResource("1_qlg0r")
+shader_parameter/radius = 0.15
+shader_parameter/softness = 0.1
+shader_parameter/intensity = 2.0
+shader_parameter/contrast = 2.0
+shader_parameter/vignette_color = Color(0, 0, 0, 1)
+shader_parameter/blink_left = 0.0
+shader_parameter/blink_right = 0.0
 
 [sub_resource type="Animation" id="Animation_qlg0r"]
 length = 0.001
@@ -1185,7 +1173,7 @@ animation = &"leg_rest"
 
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_3v2ag"]
 
-[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_fjrip"]
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_tuyoq"]
 
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_fjrip"]
 
@@ -1198,7 +1186,7 @@ animation = &"leg_rest"
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_g2els"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_g2els"]
-graph_offset = Vector2(-306.77692, 610.956)
+graph_offset = Vector2(-239.21371, 465.9348)
 nodes/output/position = Vector2(1680, 360)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_g2els")
 "nodes/Animation 2/position" = Vector2(-260, 180)
@@ -1238,10 +1226,10 @@ nodes/body_crawl/position = Vector2(960, 720)
 "nodes/Animation 9/position" = Vector2(620, 920)
 "nodes/Animation 10/node" = SubResource("AnimationNodeAnimation_y4r1p")
 "nodes/Animation 10/position" = Vector2(640, 740)
-nodes/drink/node = SubResource("AnimationNodeOneShot_fjrip")
-nodes/drink/position = Vector2(180, 880)
 "nodes/Animation 11/node" = SubResource("AnimationNodeAnimation_3v2ag")
 "nodes/Animation 11/position" = Vector2(-120, 1040)
+nodes/drink/node = SubResource("AnimationNodeOneShot_tuyoq")
+nodes/drink/position = Vector2(140, 840)
 node_connections = [&"output", 0, &"Add2", &"walk", 0, &"Animation", &"walk", 1, &"Animation 2", &"arm+leg", 0, &"sit", &"arm+leg", 1, &"arm l+r", &"l_pick", 0, &"l_walk", &"l_pick", 1, &"Animation 3", &"r_walk", 0, &"Animation 4", &"r_walk", 1, &"Animation 7", &"arm l+r", 0, &"r_walk", &"arm l+r", 1, &"drink", &"l_walk", 0, &"Animation 5", &"l_walk", 1, &"Animation 6", &"sit", 0, &"walk", &"sit", 1, &"Animation 8", &"Add2", 0, &"arm+leg", &"Add2", 1, &"body_crawl", &"body_crawl", 0, &"Animation 10", &"body_crawl", 1, &"Animation 9", &"drink", 0, &"l_pick", &"drink", 1, &"Animation 11"]
 
 [sub_resource type="Animation" id="Animation_ae60x"]
@@ -2235,26 +2223,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_4pp18")
 
-[sub_resource type="GDScript" id="GDScript_cli8x"]
-resource_name = "coffeejam2cup"
-script/source = "extends Heldable
-
-
-
-
-func hints():
-	return [
-		[\"use_coffee\", \"F\", \"Пить\"],
-	]
-"
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cli8x"]
-albedo_texture = ExtResource("3_qhqgy")
-texture_filter = 0
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_choun"]
-points = PackedVector3Array(-0.200553, 0.18284148, 0.028812915, -0.15316314, 0.18284148, 0.13265476, -0.200553, 0.24568626, 0.028812915, -0.18433757, 0.18284148, -0.08420057, -0.1198685, -0.185873, 0.0171929, -0.057126984, 0.18284148, 0.194408, -0.15316314, 0.24568626, 0.13265476, -0.09152096, -0.185873, 0.07925704, -0.15646118, 0.293606, 0.022478253, -0.18433757, 0.24568626, -0.08420057, -0.10958172, 0.18284148, -0.17047635, -0.11013139, -0.185873, -0.050312072, -0.03411913, -0.185873, 0.11613798, 0.05704847, 0.18284148, 0.194408, -0.057126984, 0.24568626, 0.194408, -0.11947588, 0.293606, 0.10346866, -0.14377938, 0.293606, -0.065662935, -0.08547453, 0.293606, -0.13297358, -0.10958172, 0.24568626, -0.17047635, -3.926456e-05, 0.18284148, -0.202616, -3.926456e-05, -0.185873, -0.121081516, -0.06545064, -0.185873, -0.101844355, 0.03407988, -0.185873, 0.11613798, 0.15312386, 0.18284148, 0.13265476, 0.05704847, 0.24568626, 0.194408, 0.091481686, -0.185873, 0.07925704, -0.044562966, 0.293606, 0.15161988, -3.926456e-05, 0.293606, -0.15807906, -3.926456e-05, 0.24568626, -0.202616, 0.10950321, 0.18284148, -0.17047635, 0.06541139, -0.185873, -0.101844355, 0.200553, 0.18284148, 0.028812915, 0.15312386, 0.24568626, 0.13265476, 0.11943662, 0.293606, 0.10346866, 0.04448445, 0.293606, 0.15161988, 0.11978999, -0.185873, 0.0171929, 0.08543527, 0.293606, -0.13297358, 0.10950321, 0.2457332, -0.17047635, 0.1842983, 0.18284148, -0.08420057, 0.11009213, -0.185873, -0.050312072, 0.200553, 0.24568626, 0.028812915, 0.15642193, 0.293606, 0.022478253, 0.14374012, 0.293606, -0.065662935, 0.1842983, 0.24568626, -0.08420057)
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_smehm"]
 seed = 3
 
@@ -2339,7 +2307,6 @@ max_results = 1
 target_position = Vector3(0, 0, -4)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Camera" unique_id=1499757946]
-visible = false
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Camera/CanvasLayer" unique_id=1796261647]
 anchors_preset = 15
@@ -2355,7 +2322,7 @@ layout_mode = 2
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1152, 648)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera" type="Camera3D" parent="Camera/CanvasLayer/AspectRatioContainer/SubViewportContainer/SubViewport" unique_id=1919031252]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92522776, -0.29801983)
@@ -2363,12 +2330,28 @@ cull_mask = 1047554
 current = true
 fov = 60.4
 
-[node name="Fog" type="MeshInstance3D" parent="Camera" unique_id=567814227]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.97958136, -0.68767, -2.5941992)
+[node name="Control" type="Control" parent="Camera/CanvasLayer" unique_id=251316850]
 visible = false
-mesh = SubResource("QuadMesh_qlg0r")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("ShaderMaterial_smehm")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Camera/CanvasLayer/Control" unique_id=1232715491]
+material = SubResource("ShaderMaterial_tuyoq")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="Camera/CanvasLayer/Control" unique_id=1798134836]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="zefirka" type="AnimationPlayer" parent="." unique_id=1731219284]
 libraries/ = SubResource("AnimationLibrary_fjrip")
@@ -2581,21 +2564,7 @@ skeleton = NodePath("")
 [node name="Held" type="Node3D" parent="." unique_id=1578947882]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33574998, 0.32985833, -0.8580091)
 
-[node name="CoffeeJam2Cup" type="RigidBody3D" parent="Held" unique_id=62438432 groups=["heldable", "pickable"]]
-can_sleep = false
-freeze = true
-linear_damp = 0.1
-angular_damp = 0.1
-script = SubResource("GDScript_cli8x")
-
-[node name="CoffeeJam2Cup" type="MeshInstance3D" parent="Held/CoffeeJam2Cup" unique_id=392589588]
-material_override = SubResource("StandardMaterial3D_cli8x")
-mesh = ExtResource("5_fjrip")
-skeleton = NodePath("../../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Held/CoffeeJam2Cup" unique_id=431319193]
-shape = SubResource("ConvexPolygonShape3D_choun")
-disabled = true
+[node name="Held2" type="Node3D" parent="Held" unique_id=1535534169]
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=1264806766]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.10336912, 0)

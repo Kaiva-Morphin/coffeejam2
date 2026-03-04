@@ -1,0 +1,43 @@
+[gd_resource type="VisualShader" format=3 uid="uid://ddkbmry3irrr7"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_n3ww5"]
+output_port_for_preview = 0
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeVec4Constant" id="VisualShaderNodeVec4Constant_wlan4"]
+output_port_for_preview = 0
+constant = Quaternion(0.117, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_wlan4"]
+input_name = "time"
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_sjmyd"]
+output_port_for_preview = 0
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_n3ww5"]
+default_input_values = [0, Vector2(0, 0)]
+op_type = 0
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_wlan4"]
+default_input_values = [0, 0.0, 1, 0.0, 2, 0.0, 3, 0.0]
+op_type = 2
+
+[sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_sjmyd"]
+output_port_for_preview = 0
+
+[resource]
+nodes/fragment/2/node = SubResource("VisualShaderNodeInput_n3ww5")
+nodes/fragment/2/position = Vector2(-920, -100)
+nodes/fragment/3/node = SubResource("VisualShaderNodeVec4Constant_wlan4")
+nodes/fragment/3/position = Vector2(-140, 740)
+nodes/fragment/4/node = SubResource("VisualShaderNodeInput_wlan4")
+nodes/fragment/4/position = Vector2(-900, 320)
+nodes/fragment/5/node = SubResource("VisualShaderNodeFloatOp_sjmyd")
+nodes/fragment/5/position = Vector2(-58.925053, 222.8498)
+nodes/fragment/6/node = SubResource("VisualShaderNodeVectorDecompose_n3ww5")
+nodes/fragment/6/position = Vector2(-520, -40)
+nodes/fragment/7/node = SubResource("VisualShaderNodeVectorCompose_wlan4")
+nodes/fragment/7/position = Vector2(-140, -40)
+nodes/fragment/8/node = SubResource("VisualShaderNodeUVFunc_sjmyd")
+nodes/fragment/8/position = Vector2(-457.93964, 334.86542)
+nodes/fragment/connections = PackedInt32Array(2, 0, 5, 0, 2, 0, 6, 0, 7, 0, 0, 0, 2, 0, 8, 0)
