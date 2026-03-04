@@ -38,7 +38,7 @@ func _ready():
 
 
 func ray_hints(_body):
-	if self.disabled:
+	if !can_use(_body):
 		GLOBAL.hints.rm_hint("use_lights")
 		return []
 	return [
@@ -57,8 +57,7 @@ func tick_ray(point: Vector3, _dir, body, _normal):
 
 
 func use(point: Vector3, _dir, body, _normal):
-	if self.disabled: return
-	if !body: return
+	if !can_use(body): return
 	if not has_start:
 		if not body:
 			return
@@ -183,4 +182,5 @@ func can_use(_body):
 	if self.disabled: return false
 	if !_body: return false
 	if _body.is_in_group("campfire"): return false
+	if _body.is_in_group("pickable"): return false
 	return true
