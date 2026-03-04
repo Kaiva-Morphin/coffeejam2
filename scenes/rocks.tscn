@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cpkudawrbn2wa"]
 
-[ext_resource type="Script" uid="uid://bk40kp45yt2n4" path="res://scenes/carrot.gd" id="1_ooke6"]
+[ext_resource type="Script" uid="uid://co042j72md5vm" path="res://scenes/snowman_part.gd" id="1_ooke6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3yv71"]
 albedo_color = Color(0, 0, 0, 1)
@@ -16,14 +16,14 @@ rings = 2
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ooke6"]
 points = PackedVector3Array(0.086233124, 0.03875, 0.049776964, -1.6883016e-05, 0.03875, 0.09959293, 0.086233124, -0.038765173, 0.049776964, 0.086233124, 0.03875, -0.049815964, -1.6883016e-05, 0.0775, 0, -1.6883016e-05, -0.038765173, 0.09957344, -0.08625001, 0.03875, 0.049776964, -0.08625001, -0.038765173, 0.049776964, -1.6883016e-05, -0.0775, 0, 0.086233124, -0.038765173, -0.049796466, -1.6883016e-05, -0.038765173, -0.09959293, -1.6883016e-05, 0.03875, -0.09959293, -0.08625001, 0.03875, -0.049796466, -0.08625001, -0.038765173, -0.049796466)
 
-[node name="Carrot" type="RigidBody3D" unique_id=1880263173 groups=["heldable", "interactable", "pickable"]]
+[node name="Rocks" type="RigidBody3D" unique_id=1880263173 groups=["heldable", "interactable", "pickable"]]
 script = ExtResource("1_ooke6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1414217893]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1002074, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0038702786, 0)
 material_override = SubResource("StandardMaterial3D_3yv71")
 mesh = SubResource("SphereMesh_ooke6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1025746828]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1002074, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0038702786, 0)
 shape = SubResource("ConvexPolygonShape3D_ooke6")

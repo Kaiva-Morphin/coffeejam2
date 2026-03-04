@@ -6,7 +6,7 @@ extends Heldable
 
 @export var lantern_spacing := 0.6
 
-const LanternScene = preload("res://scenes/lightblob.tscn")
+var LanternScene = preload("res://scenes/lightblob.tscn").instantiate()
 
 
 const COLORS := [
@@ -26,6 +26,7 @@ var preview_end : Vector3
 
 var lanterns_root : Node3D = null
 
+
 func _ready():
 	if preview_material == null:
 		preview_material = StandardMaterial3D.new()
@@ -35,7 +36,8 @@ func _ready():
 		final_material = StandardMaterial3D.new()
 		final_material.albedo_color = Color(0.2, 0.2, 0.2, 1)
 
-func ray_hints():
+
+func ray_hints(_body):
 	if self.disabled:
 		GLOBAL.hints.rm_hint("use_lights")
 		return []
@@ -56,6 +58,7 @@ func tick_ray(point: Vector3, _dir, body, _normal):
 
 func use(point: Vector3, _dir, body, _normal):
 	if self.disabled: return
+	if !body: return
 	if not has_start:
 		if not body:
 			return
@@ -121,7 +124,7 @@ func _spawn_lanterns(a: Vector3, b: Vector3):
 	var step = length / float(count + 1)
 	
 	for i in range(count):
-		var lantern = LanternScene.instantiate()
+		var lantern = LanternScene.duplicate()
 		lanterns_root.add_child(lantern)
 		
 		lantern.position = local_forward * step * (i + 1)
@@ -175,3 +178,9 @@ func on_state_enter(_state):
 func on_state_exit(_state):
 	self.disabled = false
 	
+
+func can_use(_body):
+	if self.disabled: return false
+	if !_body: return false
+	if _body.is_in_group("campfire"): return false
+	return true

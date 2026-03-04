@@ -2,16 +2,14 @@
 
 [sub_resource type="GDScript" id="GDScript_3yv71"]
 resource_name = "snowball"
-script/source = "# Snowball.gd
-extends Heldable
-#class_name Snowball
+script/source = "extends Heldable
 
 @export var growth_rate: float = 0.05        # скорость роста
 @export var max_scale: float = 5.5          # максимальный размер
 @export var min_roll_speed: float = 0.3     # минимальная скорость для роста
-@export var ray_length: float = 0.101         # длина рейкаста вниз
+@export var ray_length: float = 0.04         # длина рейкаста вниз
 var current_size = 0.1
-var ground_ray: RayCast3D
+var ground_cast: ShapeCast3D
 
 var preview
 @export var preview_material : StandardMaterial3D
@@ -21,14 +19,22 @@ func _ready():
 		preview_material = StandardMaterial3D.new()
 		preview_material.albedo_color = Color(0.2, 1, 0.4, 0.4)
 		preview_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	ground_ray = RayCast3D.new()
-	ground_ray.collide_with_areas = false
-	ground_ray.collide_with_bodies = true
-	add_child(ground_ray)
-	ground_ray.enabled = true
+
+	ground_cast = ShapeCast3D.new()
+	ground_cast.collide_with_areas = false
+	ground_cast.collide_with_bodies = true
+	ground_cast.enabled = true
+
+	var sphere := SphereShape3D.new()
+	sphere.radius = current_size
+	ground_cast.shape = sphere
+
+	ground_cast.target_position = Vector3.DOWN * ray_length
+	add_child(ground_cast)
+
 	$CollisionShape3D.shape = $CollisionShape3D.shape.duplicate(true)
 	$MeshInstance3D.mesh = $MeshInstance3D.mesh.duplicate(true)
-	
+
 	preview = $MeshInstance3D.duplicate()
 	get_tree().root.add_child.call_deferred(preview)
 	preview.hide()
@@ -36,41 +42,38 @@ func _ready():
 
 
 func _physics_process(delta):
-	_update_ground_ray()
-	var on_ground := ground_ray.is_colliding()
-	#print(on_ground)
-	
-	ray_length = current_size # + 0.05
+	_update_ground_cast()
 
-	# Горизонтальная скорость
+	var on_ground := false
+	for i in range(ground_cast.get_collision_count()):
+		var b = ground_cast.get_collider(i)
+		if b.is_in_group(\"player\"): continue
+		on_ground = true
+
+	#ray_length = current_size
+
 	var horizontal_velocity := linear_velocity
 	horizontal_velocity.y = 0.0
 	var speed := horizontal_velocity.length()
-	
+
 	var is_rolling := on_ground and speed > min_roll_speed
-	#print(horizontal_velocity)
 	if is_rolling:
 		var grow = growth_rate * speed * delta
-		current_size += grow
-		current_size = clamp(current_size, 0.0, max_scale)
-		$MeshInstance3D.mesh.radius = (current_size * 1.2)
-		$MeshInstance3D.mesh.height = (current_size * 1.2) * 2
+		current_size = clamp(current_size + grow, 0.0, max_scale)
+		$MeshInstance3D.mesh.radius = current_size + 0.02
+		$MeshInstance3D.mesh.height = (current_size + 0.02) * 2
 		$CollisionShape3D.shape.radius = current_size
-		#current_size += grow
-		#scale += Vector3.ONE * current_size
-		#scale = scale.clamp(Vector3.ONE, Vector3.ONE * max_scale)
+		ground_cast.shape.radius = current_size
 
 
-func _update_ground_ray():
-	#var down_dir: Vector3 = -global_transform.basis.y.normalized()
-	#ground_ray.global_transform.origin = global_transform.origin
-	ground_ray.global_rotation = Vector3(0., 0., 0)
-	ground_ray.target_position = Vector3.DOWN * ray_length
+func _update_ground_cast():
+	ground_cast.global_rotation = Vector3.ZERO
+	ground_cast.target_position = Vector3.DOWN * ray_length
 	
 
-func tick_ray(point: Vector3, _dir, body, _normal):
+func tick_ray(point: Vector3, _dir, _body, _normal):
 	#GLOBAL.dbg.global_position = point
-	if body:
+	if can_use(_body):
 		preview.global_position = _normal * current_size + point
 		preview.show()
 		#get_tree().create_timer(0.001).timeout.connect(func (): preview.show())
@@ -78,23 +81,20 @@ func tick_ray(point: Vector3, _dir, body, _normal):
 	else:
 		preview.hide()
 
-
 func cleanup():
 	preview.hide()
 	GLOBAL.hints.rm_hint(\"snowball\")
 
-
-func ray_hints():
-	if self.disabled:
+func ray_hints(_body):
+	if !can_use(_body):
 		GLOBAL.hints.rm_hint(\"snowball\")
 		return []
 	return [
 		[\"snowball\", \"F\", \"Прикрепить\"],
 	]
 
-
 func use(_point: Vector3, _dir, _body, _normal):
-	if self.disabled: return
+	if !can_use(_body): return
 	var body = StaticBody3D.new()
 	get_tree().root.add_child(body)
 	body.global_position = _normal * current_size + _point
@@ -105,17 +105,21 @@ func use(_point: Vector3, _dir, _body, _normal):
 	cleanup()
 	preview.queue_free()
 	self.queue_free()
-	ground_ray.queue_free()
+	ground_cast.queue_free()
 	get_tree().create_timer(0.001).timeout.connect(func (): GLOBAL.hints.rm_hint(\"snowball\"))
-
 
 func on_state_enter(_state):
 	self.disabled = true
 	cleanup()
 
-
 func on_state_exit(_state):
 	self.disabled = false
+
+func can_use(_body):
+	if self.disabled: return false
+	if !_body: return false
+	if _body.is_in_group(\"campfire\"): return false
+	return true
 "
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6tw0o"]
@@ -128,8 +132,8 @@ distance_fade_max_distance = 1.0
 [sub_resource type="SphereMesh" id="SphereMesh_xsgkx"]
 radius = 0.1
 height = 0.2
-radial_segments = 7
-rings = 3
+radial_segments = 10
+rings = 6
 
 [node name="Snowball" type="RigidBody3D" unique_id=1880263173 groups=["heldable", "interactable", "pickable"]]
 script = SubResource("GDScript_3yv71")

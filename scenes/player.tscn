@@ -20,7 +20,51 @@ script/source = "extends RigidBody3D
 @export var TILT_UPPER_LIMIT := deg_to_rad(80.0)
 
 @export var CAMERA_CONTROLLER: Camera3D
+
 @export var PICKUP_RAYCAST: RayCast3D
+
+func get_ray_collider():
+	return PICKUP_RAYCAST.get_collider()
+
+func get_ray_point():
+	return PICKUP_RAYCAST.get_collision_point()
+
+func get_ray_normal():
+	return PICKUP_RAYCAST.get_collision_normal()
+
+func ray_global_position():
+	return PICKUP_RAYCAST.global_position
+
+func ray_global_transform():
+	return PICKUP_RAYCAST.global_transform
+
+func ray_global_basis():
+	return PICKUP_RAYCAST.global_basis
+
+
+
+@export var PICKUP_SHAPECAST: ShapeCast3D
+
+
+#func get_ray_collider():
+	#return PICKUP_SHAPECAST.get_collider(0)
+#
+#func get_ray_point():
+	#return PICKUP_SHAPECAST.get_collision_point(0)
+#
+#func get_ray_normal():
+	#return PICKUP_SHAPECAST.get_collision_normal(0)
+#
+#func ray_global_position():
+	#return PICKUP_SHAPECAST.global_position
+#
+#func ray_global_transform():
+	#return PICKUP_SHAPECAST.global_transform
+#
+#func ray_global_basis():
+	#return PICKUP_SHAPECAST.global_basis
+
+
 @onready var HINTS = $\"../Hints\"
 
 var PICKED_PIN : PinJoint3D
@@ -37,15 +81,9 @@ var held_distance = 10.0
 @export var dbg: Node3D
 @export var ANIMATION: AnimationTree
 
+var snowball = preload(\"res://scenes/snowball.tscn\").instantiate()
 
-func get_ray_collider():
-	return PICKUP_RAYCAST.get_collider()
 
-func get_ray_point():
-	return PICKUP_RAYCAST.get_collision_point()
-
-func get_ray_normal():
-	return PICKUP_RAYCAST.get_collision_normal()
 
 enum PLAYERSTATE {
 	Controlled,
@@ -53,6 +91,7 @@ enum PLAYERSTATE {
 	CoffeeMaker,
 	Sitting
 }
+
 var current_state = PLAYERSTATE.Controlled
 
 func _ready() -> void:
@@ -152,11 +191,11 @@ func integrate_control(state: PhysicsDirectBodyState3D):
 	apply_central_impulse(Vector3.DOWN * GRAVITY_SCALE * mass * state.get_step())
 	if picked_item:
 		if picked_joint:
-			var target_pos = PICKUP_RAYCAST.global_position - PICKUP_RAYCAST.global_transform.basis.z * held_distance
+			var target_pos = ray_global_position() - ray_global_transform().basis.z * held_distance
 			var dir = target_pos - picked_item.global_position
 			picked_item.linear_velocity = linear_velocity + dir * 10.0
 		else:
-			PICKED_STATIC.global_position = PICKUP_RAYCAST.global_position - PICKUP_RAYCAST.global_transform.basis.z * held_distance
+			PICKED_STATIC.global_position = ray_global_position() - ray_global_transform().basis.z * held_distance
 	$Camera/CanvasLayer/AspectRatioContainer/SubViewportContainer/SubViewport/Camera.global_transform = $Camera.global_transform
 	$Camera/CanvasLayer/AspectRatioContainer/SubViewportContainer/SubViewport.size = get_window().size
 
@@ -167,10 +206,12 @@ func control_tick(_dt: float):
 		$Cat_Winter.position.y = lerpf($Cat_Winter.position.y, 0.0, _dt * 10.0)
 		$Camera.position.y = lerpf($Camera.position.y , 0.425, _dt * 10.0)
 		$Held.position.y = lerpf($Held.position.y, -0.2, _dt * 10.0);
+		ANIMATION.set(\"parameters/body_crawl/blend_amount\", 1.0)
 	else:
 		$Cat_Winter.position.y = lerpf($Cat_Winter.position.y, 0.545, _dt * 10.0)
 		$Camera.position.y = lerpf($Camera.position.y, 0.925, _dt * 10.0)
 		$Held.position.y = lerpf($Held.position.y, 0.33, _dt * 10.0);
+		ANIMATION.set(\"parameters/body_crawl/blend_amount\", 0.0)
 	if Input.is_action_just_released(\"space\") && on_ground:
 		apply_central_impulse(Vector3.UP * 8.0)
 	
@@ -183,12 +224,12 @@ func control_tick(_dt: float):
 			PICKED_STATIC.queue_free()
 			PICKED_STATIC = null
 		picked_item = null
-	var body = PICKUP_RAYCAST.get_collider()
+	var body = get_ray_collider()
 	if Input.is_action_just_pressed(\"lmb\"):
 		if body and body is RigidBody3D and picked_item == null and body.is_in_group(\"pickable\"):
 			picked_item = body
-			var d = PICKUP_RAYCAST.get_collision_point()
-			held_distance = (d - PICKUP_RAYCAST.global_position).length()
+			var d = get_ray_point()
+			held_distance = (d - ray_global_position()).length()
 			if picked_item.is_in_group(\"pickable_joint\"):
 				picked_joint = true
 			else:
@@ -205,12 +246,18 @@ func control_tick(_dt: float):
 				PICKED_PIN = p
 				PICKED_STATIC = s
 				picked_joint = false
-	
 	if body and body.is_in_group(\"pickable\") and !picked_item:
 		HINTS.center_hint(\"pick\", \"ЛКМ\", \"Тянуть\")
 	else:
 		HINTS.rm_hint(\"pick\")
-	
+	if body and body.is_in_group(\"make_snowballs\") and !picked_item and !held_item:
+		HINTS.hint(\"make_snowball\", \"F\", \"Слепить снежок\")
+		if Input.is_action_just_pressed(\"use_held\"):
+			var b = snowball.duplicate()
+			get_tree().root.add_child(b)
+			pick_item(b)
+	else:
+		HINTS.rm_hint(\"make_snowball\")
 	if body and body.is_in_group(\"heldable\") and !held_item and !picked_item:
 		HINTS.center_hint(\"take\", \"E\", \"Взять\")
 		if Input.is_action_just_pressed(\"interact\"):
@@ -226,6 +273,11 @@ func control_tick(_dt: float):
 	else:
 		ANIMATION.set(\"parameters/l_pick/blend_amount\", 0.0)
 		HINTS.rm_hint(\"throw\")
+	
+	if body and body.is_in_group(\"hint\"):
+		HINTS.center_hint_raw(body.hint())
+	else:
+		HINTS.rm_hint(\"label_hint\")
 	
 	if body and body.is_in_group(\"interactable\") and !picked_item:
 		if body.is_in_group(\"campfire\"):
@@ -378,29 +430,28 @@ func throw_item():
 	var s = held_item.get_node(\"CollisionShape3D\")
 	if s:
 		s.disabled = false
-		
 	for hint in held_item.hints():
 		var key = hint[0]
 		HINTS.rm_hint(key)
 	held_item.reparent(get_tree().root, true)
-	for hint in held_item.ray_hints():
+	for hint in held_item.ray_hints(get_ray_collider()):
 		HINTS.rm_hint(hint[0])
 	held_item.cleanup()
 	held_item = null
 
 func use_item():
-	held_item.use(get_ray_point(), PICKUP_RAYCAST.global_basis.z, get_ray_collider(), get_ray_normal())
+	held_item.use(get_ray_point(), ray_global_basis().z, get_ray_collider(), get_ray_normal())
 
 func tick_held(_dt):
 	if !held_item: return
-	held_item.tick_ray(get_ray_point(), PICKUP_RAYCAST.global_basis.z, get_ray_collider(), get_ray_normal())
+	held_item.tick_ray(get_ray_point(), ray_global_basis().z, get_ray_collider(), get_ray_normal())
 	if Input.is_action_just_pressed(\"use_held\"):
 		use_item()
-	if PICKUP_RAYCAST.get_collider():
-		for hint in held_item.ray_hints():
+	if get_ray_collider():
+		for hint in held_item.ray_hints(get_ray_collider()):
 			HINTS.center_hint_raw(hint)
 	else:
-		for hint in held_item.ray_hints():
+		for hint in held_item.ray_hints(get_ray_collider()):
 			HINTS.rm_hint(hint[0])
 
 
@@ -615,6 +666,9 @@ func campfire_cleanup():
 	HINTS.rm_hint(\"eat\")
 	if held_item: held_item.on_state_exit(PLAYERSTATE.CampFire)
 "
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tuyoq"]
+radius = 0.1
 
 [sub_resource type="QuadMesh" id="QuadMesh_qlg0r"]
 flip_faces = true
@@ -1076,6 +1130,11 @@ size = Vector2(0.5, 0.5)
 radius = 0.71
 height = 2.5134277
 
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_tuyoq"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y4r1p"]
+animation = &"body_rest"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_g2els"]
 animation = &"leg_walk"
 
@@ -1097,12 +1156,17 @@ animation = &"arm_r_walk"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ur7pv"]
 animation = &"leg_sit"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_d2wvv"]
+animation = &"body_crawl"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qhqgy"]
 animation = &"leg_rest"
 
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_fjrip"]
 
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_g2els"]
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_3v2ag"]
 
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_fjrip"]
 
@@ -1115,7 +1179,8 @@ animation = &"leg_rest"
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_g2els"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_g2els"]
-nodes/output/position = Vector2(1240, 380)
+graph_offset = Vector2(-213.02942, 200.78244)
+nodes/output/position = Vector2(1680, 360)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_g2els")
 "nodes/Animation 2/position" = Vector2(-260, 180)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_qhqgy")
@@ -1146,7 +1211,15 @@ nodes/sit/node = SubResource("AnimationNodeBlend2_y4r1p")
 nodes/sit/position = Vector2(380, 160)
 "nodes/Animation 8/node" = SubResource("AnimationNodeAnimation_ur7pv")
 "nodes/Animation 8/position" = Vector2(120, 240)
-node_connections = [&"output", 0, &"arm+leg", &"walk", 0, &"Animation", &"walk", 1, &"Animation 2", &"arm+leg", 0, &"sit", &"arm+leg", 1, &"arm l+r", &"l_pick", 0, &"l_walk", &"l_pick", 1, &"Animation 3", &"r_walk", 0, &"Animation 4", &"r_walk", 1, &"Animation 7", &"arm l+r", 0, &"r_walk", &"arm l+r", 1, &"l_pick", &"l_walk", 0, &"Animation 5", &"l_walk", 1, &"Animation 6", &"sit", 0, &"walk", &"sit", 1, &"Animation 8"]
+nodes/Add2/node = SubResource("AnimationNodeAdd2_tuyoq")
+nodes/Add2/position = Vector2(1340, 420)
+nodes/body_crawl/node = SubResource("AnimationNodeBlend2_3v2ag")
+nodes/body_crawl/position = Vector2(960, 720)
+"nodes/Animation 9/node" = SubResource("AnimationNodeAnimation_d2wvv")
+"nodes/Animation 9/position" = Vector2(620, 920)
+"nodes/Animation 10/node" = SubResource("AnimationNodeAnimation_y4r1p")
+"nodes/Animation 10/position" = Vector2(640, 740)
+node_connections = [&"output", 0, &"Add2", &"walk", 0, &"Animation", &"walk", 1, &"Animation 2", &"arm+leg", 0, &"sit", &"arm+leg", 1, &"arm l+r", &"l_pick", 0, &"l_walk", &"l_pick", 1, &"Animation 3", &"r_walk", 0, &"Animation 4", &"r_walk", 1, &"Animation 7", &"arm l+r", 0, &"r_walk", &"arm l+r", 1, &"l_pick", &"l_walk", 0, &"Animation 5", &"l_walk", 1, &"Animation 6", &"sit", 0, &"walk", &"sit", 1, &"Animation 8", &"Add2", 0, &"arm+leg", &"Add2", 1, &"body_crawl", &"body_crawl", 0, &"Animation 10", &"body_crawl", 1, &"Animation 9"]
 
 [sub_resource type="Animation" id="Animation_ae60x"]
 length = 0.001
@@ -1246,6 +1319,30 @@ tracks/7/keys = {
 "update": 0,
 "values": [Quaternion(1.6825048e-07, -1.6566246e-07, 0.71187705, 0.7023041)]
 }
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Cat_Winter/Armature/Skeleton3D/Тело_2:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Cat_Winter/Armature/Skeleton3D/Тело_2:rotation")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_f1ej7"]
 resource_name = "arm_l_walk"
@@ -1254,26 +1351,26 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Cat_Winter/Armature/Skeleton3D/Рука_r:position")
+tracks/0/path = NodePath("Cat_Winter/Armature/Skeleton3D/Рука_l:position")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.19999999, 0.4),
+"times": PackedFloat32Array(0, 0.20000002, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector3(-0.2475035, 0.5920775, -0.023957245), Vector3(-0.27698714, 0.56911427, 0.028830674), Vector3(-0.2475035, 0.5920775, -0.023957245)]
+"values": [Vector3(0.252, 0.562, 0.043860108), Vector3(0.252, 0.562, -0.052201133), Vector3(0.252, 0.562, 0.043860108)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Cat_Winter/Armature/Skeleton3D/Рука_r:quaternion")
+tracks/1/path = NodePath("Cat_Winter/Armature/Skeleton3D/Рука_l:rotation")
 tracks/1/interp = 2
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.19999999, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Quaternion(0.5668757, -0.3618418, 0.73918545, 0.03643228), Quaternion(0.5046872, -0.03504347, 0.8222509, 0.2607033), Quaternion(0.5668757, -0.3618418, 0.73918545, 0.03643228)]
+"values": [Vector3(0.42760566, -1.2915436, -2.6494098), Vector3(0.49741885, -1.4224434, -3.4784412), Vector3(0.42760566, -1.2915436, -2.6494098)]
 }
 
 [sub_resource type="Animation" id="Animation_a8ls1"]
@@ -1463,6 +1560,109 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Quaternion(0.5668757, -0.3618418, 0.73918545, 0.03643228), Quaternion(0.5046872, -0.03504347, 0.8222509, 0.2607033), Quaternion(0.5668757, -0.3618418, 0.73918545, 0.03643228)]
+}
+
+[sub_resource type="Animation" id="Animation_60mlk"]
+resource_name = "body_crawl"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Cat_Winter/Armature/Skeleton3D/Тело_2:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-9.255756e-08, 0.24278623, -0.37693745)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Cat_Winter/Armature/Skeleton3D/Тело_2:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.6819874, -2.5188776e-08, -7.098324e-08)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Cat_Winter/Armature/Skeleton3D/Нога_l:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.15845084, 0.16732568, -0.38844272)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Cat_Winter/Armature/Skeleton3D/Нога_r:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.1584509, 0.16732568, -0.38844275)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Cat_Winter/Armature/Skeleton3D/Нога_l:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.11273937, 1.5711883, -3.1249723)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Cat_Winter/Armature/Skeleton3D/Нога_r:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.11273937, -1.5711883, 3.1249723)]
+}
+
+[sub_resource type="Animation" id="Animation_4r5pv"]
+resource_name = "body_rest"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Cat_Winter/Armature/Skeleton3D/Тело_2:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Cat_Winter/Armature/Skeleton3D/Тело_2:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_dqkch"]
@@ -1660,6 +1860,8 @@ _data = {
 &"arms_l_rest": SubResource("Animation_qfm1y"),
 &"arms_rest": SubResource("Animation_jej6c"),
 &"arms_walk": SubResource("Animation_g2els"),
+&"body_crawl": SubResource("Animation_60mlk"),
+&"body_rest": SubResource("Animation_4r5pv"),
 &"l_arm_forward": SubResource("Animation_dqkch"),
 &"leg_rest": SubResource("Animation_qhqgy"),
 &"leg_sit": SubResource("Animation_fulsm"),
@@ -2040,7 +2242,9 @@ glow_enabled = true
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0
 
-[node name="Player" type="RigidBody3D" unique_id=2016181414 node_paths=PackedStringArray("CAMERA_CONTROLLER", "PICKUP_RAYCAST", "ANIMATION")]
+[sub_resource type="SphereShape3D" id="SphereShape3D_fjrip"]
+
+[node name="Player" type="RigidBody3D" unique_id=2016181414 node_paths=PackedStringArray("CAMERA_CONTROLLER", "PICKUP_RAYCAST", "PICKUP_SHAPECAST", "ANIMATION") groups=["player"]]
 collision_layer = 3
 collision_mask = 3
 axis_lock_angular_x = true
@@ -2049,12 +2253,19 @@ axis_lock_angular_z = true
 script = SubResource("GDScript_85g3d")
 CAMERA_CONTROLLER = NodePath("Camera")
 PICKUP_RAYCAST = NodePath("Camera/Interact")
+PICKUP_SHAPECAST = NodePath("Camera/ShapeCast3D")
 ANIMATION = NodePath("AnimationTree")
 
 [node name="Camera" type="Camera3D" parent="." unique_id=1533371676]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92522776, -0.29801983)
 current = true
 fov = 60.4
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="Camera" unique_id=431435564]
+enabled = false
+shape = SubResource("SphereShape3D_tuyoq")
+target_position = Vector3(0, 0, -3)
+max_results = 1
 
 [node name="Interact" type="RayCast3D" parent="Camera" unique_id=981791866]
 target_position = Vector3(0, 0, -3)
@@ -2138,6 +2349,7 @@ material = SubResource("FogMaterial_jyhfs")
 
 [node name="Snow" type="GPUParticles3D" parent="." unique_id=79501114]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.955769, 0)
+visible = false
 amount = 40000
 lifetime = 5.0
 preprocess = 60.0
@@ -2160,6 +2372,8 @@ parameters/r_walk/blend_amount = 1.0
 "parameters/arm l+r/add_amount" = 1.0
 parameters/l_walk/blend_amount = 1.0
 parameters/sit/blend_amount = 0.0
+parameters/Add2/add_amount = 1.0
+parameters/body_crawl/blend_amount = 0.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1150680261]
 libraries/ = SubResource("AnimationLibrary_ae60x")
@@ -2312,3 +2526,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.10336912, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=585288892]
 environment = SubResource("Environment_3v2ag")
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="." unique_id=240014381]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.28925017, 0)
+shape = SubResource("SphereShape3D_fjrip")
+target_position = Vector3(0, -0.3, 0)
+max_results = 1

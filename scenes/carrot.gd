@@ -50,6 +50,7 @@ func ray_hints():
 
 func use(_point: Vector3, _dir, _body, _normal):
 	if self.disabled: return
+	if !_body: return
 	var body = StaticBody3D.new()
 	get_tree().root.add_child(body)
 	var up = _normal.normalized()

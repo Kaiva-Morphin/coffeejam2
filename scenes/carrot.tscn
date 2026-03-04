@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b7d8nk32v6qft"]
 
-[ext_resource type="Script" uid="uid://bk40kp45yt2n4" path="res://scenes/carrot.gd" id="1_btq7l"]
+[ext_resource type="Script" uid="uid://co042j72md5vm" path="res://scenes/snowman_part.gd" id="1_btq7l"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3yv71"]
 albedo_color = Color(0.8980406, 0.33282974, 5.7756904e-07, 1)

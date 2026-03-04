@@ -40,6 +40,9 @@ pickable=""
 heldable=""
 log=""
 coffeemaker=""
+make_snowballs=""
+hint=""
+player=""
 
 [input]
 

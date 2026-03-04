@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://dmi28d3ag0blh"]
 
-[ext_resource type="Script" uid="uid://bk40kp45yt2n4" path="res://scenes/carrot.gd" id="1_i3vek"]
+[ext_resource type="Script" uid="uid://co042j72md5vm" path="res://scenes/snowman_part.gd" id="1_i3vek"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_i3vek"]
 height = 1.0644531
